@@ -1,0 +1,258 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Data analysis</title>
+</h:head>
+<h:body>
+<h:outputStylesheet name="css/default.css"/>
+<h:form enctype="multipart/form-data">
+
+<p:fileUpload update="tt dataValues"
+
+              fileUploadListener="#{bBean.handleFileUpload}" mode="advanced"
+
+        />
+<p:growl autoUpdate="true"/>
+
+<p:panelMenu style="width:600px">
+    <p:submenu label="Apache Statistics">
+        <p:menuitem value="Descriptive statistics" actionListener="#{bBean.descriptiveStatistics}" ajax="false"/>
+        <p:menuitem value="Frequency distributions" actionListener="#{bBean.frequencyDistributions}" ajax="false"/>
+        <p:menuitem value="Simple Regression" onclick="PF('dlgSimple').show();" ajax="true"/>
+
+        <p:submenu label="Multiple Regression">
+            <p:menuitem value="OLS Multiple Linear Regression" onclick="PF('osldlg').show();" ajax="true"/>
+            <p:menuitem value="GLS Multiple Linear Regression" onclick="PF('glsdlg').show();" ajax="true"/>
+        </p:submenu>
+        <p:menuitem value="Rank transformations" onclick="PF('rankDlg').show();" ajax="true"/>
+
+        <p:submenu label="Covariance and correlation">
+            <p:menuitem
+                    value="Covariance, Kendalls's tau rank correlation coefficient, Spearman's rank correlation coefficient, Pearson's correlation"
+                    style="white-space:pre-line;width:500px; height: 60px;" onclick="PF('covdlg').show();" ajax="true"/>
+            <p:menuitem
+                    value="Covariance matrix, Pearson's correlation matrix, Pearson's correlation significance and standard errors"
+                    style="white-space:pre-line;width:500px;  height: 50px;" onclick="PF('covMatrixdlg').show();"
+                    ajax="true"/>
+        </p:submenu>
+        <p:menuitem value="Statistical Tests" onclick="PF('tests').show();" ajax="true"/>
+        <p:menuitem value="Original data" actionListener="#{bBean.original}" ajax="false"/>
+
+
+    </p:submenu>
+</p:panelMenu>
+
+<p:dialog global="true" header="Parameters of Covariance Matrixes" widgetVar="covMatrixdlg" modal="true" minHeight="300"
+          dynamic="true">
+
+    <h:panelGrid columns="4">
+        <h:outputLabel for="dataCov" value="Matrix:"/>
+        <p:selectCheckboxMenu id="dataCov" value="#{bBean.matrixDataCov}" label="Independant vars"
+                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+            <f:selectItems value="#{bBean.columnTemplate}"/>
+        </p:selectCheckboxMenu>
+        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.covariance()}"
+                         onclick="PF('covMatrixdlg').hide();" update="dataValues"/>
+    </h:panelGrid>
+</p:dialog>
+
+<p:dialog global="true" header="Parameters of OLS Multiple Linear Regression" widgetVar="osldlg" modal="true"
+          minHeight="300" dynamic="true">
+
+    <h:panelGrid columns="4">
+        <h:outputLabel for="depMenu" value="Dependant vars:"/>
+        <p:selectOneMenu id="depMenu" value="#{bBean.selectedDepVars}" label="Dependant vars"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
+                         update="displayIndep displayDep">
+            <f:selectItems value="#{bBean.columnTemplate}"/>
+        </p:selectOneMenu>
+        <h:outputLabel for="indepMenu" value="Inpendant var:"/>
+        <p:selectCheckboxMenu id="indepMenu" value="#{bBean.selectedIndepVars}" label="Independant vars"
+                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
+                              update="displayIndep displayDep">
+            <f:selectItems value="#{bBean.columnTemplate}"/>
+        </p:selectCheckboxMenu>
+        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.multipleRegressionOls}"
+                         onclick="PF('osldlg').hide();" update="dataValues"/>
+    </h:panelGrid>
+</p:dialog>
+
+<p:dialog global="true" header="Parameters of Rank Transform" widgetVar="rankDlg" modal="true" minHeight="400"
+          dynamic="true">
+
+    <h:panelGrid columns="4">
+        <h:outputLabel for="tieMenu" value="Ties strategy:"/>
+        <p:selectOneMenu id="tieMenu" value="#{bBean.tieStrategy}"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+            <f:selectItem itemLabel="SEQUENTIAL" itemValue="SEQUENTIAL" noSelectionOption="true"/>
+            <f:selectItem itemLabel="MINIMUM" itemValue="MINIMUM"/>
+            <f:selectItem itemLabel="MAXIMUM" itemValue="MAXIMUM"/>
+            <f:selectItem itemLabel="AVERAGE" itemValue="AVERAGE"/>
+            <f:selectItem itemLabel="RANDOM" itemValue="RANDOM"/>
+        </p:selectOneMenu>
+        <h:outputLabel for="nanMenu" value="Nan strategy:"/>
+        <p:selectOneMenu id="nanMenu" value="#{bBean.nanStrategy}"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+            <f:selectItem itemLabel="MINIMAL" itemValue="MINIMAL" noSelectionOption="true"/>
+            <f:selectItem itemLabel="MAXIMAL" itemValue="MAXIMAL"/>
+            <f:selectItem itemLabel="REMOVED" itemValue="REMOVED"/>
+            <f:selectItem itemLabel="FIXED" itemValue="FIXED"/>
+            <f:selectItem itemLabel="FAILED" itemValue="FAILED"/>
+
+        </p:selectOneMenu>
+        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.rankTransform()}"
+                         onclick="PF('rankDlg').hide();" update="dataValues"/>
+    </h:panelGrid>
+</p:dialog>
+
+
+<p:dialog global="true" header="Parameters of Covariance" widgetVar="covdlg" modal="true" minHeight="300"
+          dynamic="true">
+
+    <h:panelGrid columns="4">
+
+        <h:outputLabel for="indepMenuCov" value="X var:"/>
+        <p:selectOneMenu id="indepMenuCov" value="#{bBean.selectedX}" label="Independant vars"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+            <f:selectItems value="#{bBean.columnTemplate}"/>
+        </p:selectOneMenu>
+
+        <h:outputLabel for="obsMenuCov" value="Y var:"/>
+        <p:selectOneMenu id="obsMenuCov" value="#{bBean.selectedY}" label="Y vars"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+            <f:selectItems value="#{bBean.columnTemplate}"/>
+        </p:selectOneMenu>
+        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.pearsonsCorrelation()}"
+                         onclick="PF('covdlg').hide();" update="dataValues"/>
+    </h:panelGrid>
+</p:dialog>
+
+<p:dialog global="true" header="Parameters of GLS Multiple Linear Regression" widgetVar="glsdlg" modal="true"
+          minHeight="300" dynamic="true">
+
+    <h:panelGrid columns="4">
+        <h:outputLabel for="depMenuGls" value="Dependant vars:"/>
+        <p:selectOneMenu id="depMenuGls" value="#{bBean.selectedDepVars}" label="Dependant vars"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
+                         update="displayIndep displayDep">
+            <f:selectItems value="#{bBean.columnTemplate}"/>
+        </p:selectOneMenu>
+        <h:outputLabel for="indepMenuGls" value="Inpendant var:"/>
+        <p:selectCheckboxMenu id="indepMenuGls" value="#{bBean.selectedIndepVars}" label="Independant vars"
+                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
+                              update="displayIndep displayDep">
+            <f:selectItems value="#{bBean.columnTemplate}"/>
+        </p:selectCheckboxMenu>
+
+        <h:outputLabel for="obsMenuGls" value="Observation var:"/>
+        <p:selectCheckboxMenu id="obsMenuGls" value="#{bBean.selectedObsVars}" label="Observation vars"
+                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
+                              update="displayIndep displayDep">
+            <f:selectItems value="#{bBean.columnTemplate}"/>
+        </p:selectCheckboxMenu>
+        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.multipleRegressionGls}"
+                         onclick="PF('dlg').hide();" update="dataValues"/>
+    </h:panelGrid>
+</p:dialog>
+
+
+<p:dialog global="true" header="Parameters of simple regression" widgetVar="dlgSimple" modal="true" minHeight="300"
+          dynamic="true">
+
+    <h:panelGrid columns="4">
+        <h:outputLabel for="indepMenuSimple" value="Independant vars:"/>
+        <p:selectOneMenu id="indepMenuSimple" value="#{bBean.selectedInDep}" label="Independant vars"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
+                         update="displayIndep displayDep">
+            <f:selectItems value="#{bBean.columnTemplate}"/>
+        </p:selectOneMenu>
+        <h:outputLabel for="depMenuSimple" value="Dependant vars:"/>
+        <p:selectOneMenu id="depMenuSimple" value="#{bBean.selectedDep}" label="Dependant vars"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
+                         update="displayIndep displayDep">
+            <f:selectItems value="#{bBean.columnTemplate}"/>
+        </p:selectOneMenu>
+        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.simpleRegression}"
+                         onclick="PF('dlgSimple').hide();" update="dataValues"/>
+    </h:panelGrid>
+
+
+</p:dialog>
+<!--allowTypes="/(\.|\/)(xlsx)$/"-->
+<p:growl id="tt" showDetail="true"/>
+
+
+<p:dataTable id="dataValues" rowIndexVar="rowId" var="car" value="#{bBean.dataValues}" widgetVar="dataValuesTable"
+             scrollHeight="65%" resizableColumns="true" liveResize="true" scrollWidth="100%" scrollable="true"
+             filteredValue="#{bBean.filteredDataValues}"
+             paginator="true" rows="20"
+             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
+             rowsPerPageTemplate="20,50,100">
+    <f:facet name="header">
+        Data Statistics
+
+        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator"/>
+        <p:columnToggler datasource="dataValues" trigger="toggler"/>
+    </f:facet>
+    <f:facet name="{Exporters}">
+        <h:commandLink>
+            <p:graphicImage value="/resources/images/excel.png" width="24"/>
+            <p:dataExporter type="xls" target="dataValues" fileName="statistics"/>
+        </h:commandLink>
+
+        <h:commandLink>
+            <p:graphicImage value="/resources/images/pdf.png" width="24"/>
+            <p:dataExporter type="pdf" target="dataValues" fileName="statistics"/>
+        </h:commandLink>
+
+        <h:commandLink>
+            <p:graphicImage value="/resources/images/csv.png" width="24"/>
+            <p:dataExporter type="csv" target="dataValues" fileName="statistics"/>
+        </h:commandLink>
+
+        <h:commandLink>
+            <p:graphicImage value="/resources/images/xml.png" width="24"/>
+            <p:dataExporter type="xml" target="dataValues" fileName="statistics"/>
+        </h:commandLink>
+    </f:facet>
+    <p:columns value="#{bBean.columns}" var="column" columnIndexVar="statistics" sortBy="#{car[column.property]}"
+               filterBy="#{car[column.property]}" width="200">
+        <f:facet name="header">
+            <h:outputText value="#{column.header}"/>
+        </f:facet>
+        <h:outputText value="#{car.getValues(rowId+1, column.index)}"/>
+    </p:columns>
+
+
+</p:dataTable>
+
+<h2>Export Page Data Only</h2>
+<h:commandLink>
+    <p:graphicImage value="/resources/images/excel.png"/>
+    <p:dataExporter type="xls" target="dataValues" fileName="statistics" pageOnly="true"/>
+</h:commandLink>
+
+<h:commandLink>
+    <p:graphicImage value="/resources/images/pdf.png"/>
+    <p:dataExporter type="pdf" target="dataValues" fileName="statistics" pageOnly="true"/>
+</h:commandLink>
+
+<h:commandLink>
+    <p:graphicImage value="/resources/images/csv.png"/>
+    <p:dataExporter type="csv" target="dataValues" fileName="statistics" pageOnly="true"/>
+</h:commandLink>
+
+<h:commandLink>
+    <p:graphicImage value="/resources/images/xml.png"/>
+    <p:dataExporter type="xml" target="dataValues" fileName="statistics" pageOnly="true"/>
+</h:commandLink>
+
+</h:form>
+</h:body>
+
+</html>
