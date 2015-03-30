@@ -30,4 +30,9 @@ public class DataValue {
     public Map<Integer, List<String>> getValues() {
         return values;
     }
+
+    public Map<Integer, List<String>> addValue(double v, int c) {
+        values.get(c).add(String.valueOf(v));
+        return values;
+    }
 }
