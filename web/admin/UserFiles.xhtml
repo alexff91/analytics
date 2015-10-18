@@ -1,0 +1,106 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="content">
+        <c:if test="#{loginController.loggedUser ne null}">
+            <h:form id="form">
+                <p:dataTable id="dataTable" var="user"
+                             value="#{userController.lazyModel.wrappedData}"
+                             styleClass="userDataTableStyle" lazy="true" rowKey="#{user.id}"
+                             paginator="true" rows="10"
+                             selection="#{userController.selectedUserTables}"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="10,15,50">
+                    <f:facet name="header">
+                        User List
+                    </f:facet>
+                    <p:column selectionMode="multiple" style="width:18px"/>
+                    <p:column sortBy="#{user.username}">
+                        <f:facet name="header">
+                            <h:outputText value="Username"/>
+                        </f:facet>
+                        <p:commandLink value="#{user.username}" update=":userDetailForm:display"
+                                       oncomplete="PF('userDialog').show()" title="View">
+                            <f:setPropertyActionListener value="#{user}"
+                                                         target="#{userController.selectedUserTable}"/>
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column sortBy="#{user.firstname}">
+                        <f:facet name="header">
+                            <h:outputText value="Firstname"/>
+                        </f:facet>
+                        <h:outputText value="#{user.firstname}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{user.lastname}">
+                        <f:facet name="header">
+                            <h:outputText value="Lastname"/>
+                        </f:facet>
+                        <h:outputText value="#{user.lastname}"/>
+                    </p:column>
+
+                    <!---->
+                    <!--<f:facet name="footer">-->
+                    <!--<p:commandButton value="New User" oncomplete="PF('newUserDialog').show()"-->
+                    <!--icon="ui-icon-star" title="Creates new user"/>-->
+                    <!--<p:commandButton value="Delete Users" actionListener="#{userController.doDeleteUsers}" update="dataTable" icon="ui-icon-trash"/>-->
+                    <!--</f:facet>-->
+                </p:dataTable>
+            </h:form>
+
+
+            <p:dialog header="User Files" widgetVar="userDialog" resizable="true" id="userDlg">
+                <h:form id="userDetailForm">
+                    <p:panelGrid id="display" columns="2" cellpadding="4" style="margin:0 auto;">
+                        <h:outputText value="Files :"></h:outputText>
+                        <p:selectManyMenu id="newUserRole" required="true"
+                                          value="#{userController.selectedUserTable.files}"
+                                          showCheckbox="true" style="width:250px;" var="t">
+                            <f:selectItems value="#{loginController.loggedUser.files}" var="file"
+                                           itemValue="#{file}" itemLabel="#{file.filename}">
+
+                            </f:selectItems>
+                            <f:converter converterId="com.nz.util.FileConverter"/>
+                            <p:column>
+                                <h:outputText value="#{t.filename}"/>
+                            </p:column>
+                        </p:selectManyMenu>
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Update" update=":form:dataTable, :growl"
+                                             oncomplete="handleSubmitRequest(xhr, status, args, 'userDlg','newUserForm'); "
+                                             actionListener="#{userController.doUpdateUser}"/>
+                        </f:facet>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
+
+            <p:growl id="growl" showDetail="true" life="5000"/>
+
+            <script type="text/javascript">
+                function handleSubmitRequest(xhr, status, args, dialogName, formName) {
+                    dialog = jQuery('#' + dialogName);
+                    if (args.validationFailed) {
+                        dialog.effect("shake", { times: 3 }, 100);
+                    } else {
+                        clearForm(formName);
+                        newUserDialog.hide();
+                        userDialog.hide();
+                    }
+                }
+                function clearForm(formName) {
+                    jQuery('#' + formName).each(function () {
+                        this.reset();
+                    });
+                }
+            </script>
+        </c:if>
+    </ui:define>
+</ui:composition>

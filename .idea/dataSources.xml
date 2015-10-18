@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="4174246369">
+    <data-source source="LOCAL" name="Derby - simplecrud_db@localhost" uuid="d3198aa0-5301-4ee6-ae26-897b5f9e5388">
+      <driver-ref>derby.remote</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.apache.derby.jdbc.ClientDriver</jdbc-driver>
+      <jdbc-url>jdbc:derby://localhost:1527/simplecrud_db</jdbc-url>
+      <schema-pattern>*</schema-pattern>
+      <default-schemas>*.APP</default-schemas>
+      <libraries />
+      <ssh-properties>
+        <enabled>true</enabled>
+        <proxy-host>198.23.188.82</proxy-host>
+        <proxy-port>22</proxy-port>
+        <user>root</user>
+        <use-password>true</use-password>
+        <password>dff1df92dff8dfd3dff7df82df9fdf81df84dffcdfe1df83</password>
+        <private-key-path />
+        <passphrase />
+      </ssh-properties>
+    </data-source>
+    <data-source source="LOCAL" name="Derby - [2]" uuid="0be28445-af21-4ce1-ae58-10278a60817c">
+      <driver-ref>derby.embedded</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.apache.derby.jdbc.EmbeddedDriver</jdbc-driver>
+      <jdbc-url>jdbc:derby:D:/wildfly-8.2.0.Final/standalone/derbydata;</jdbc-url>
+      <schema-pattern>*</schema-pattern>
+      <default-schemas>*.APP</default-schemas>
+      <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="Derby - simplecrud_db@localhost [2]" uuid="b49f4b0b-4311-4740-b5cf-55c4f4810a51">
+      <driver-ref>derby.remote</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.apache.derby.jdbc.ClientDriver</jdbc-driver>
+      <jdbc-url>jdbc:derby://localhost:1527/simplecrud_db</jdbc-url>
+      <schema-pattern>*</schema-pattern>
+      <default-schemas>*.APP</default-schemas>
+      <libraries />
+      <ssh-properties>
+        <enabled>true</enabled>
+        <proxy-host>198.23.188.82</proxy-host>
+        <proxy-port>22</proxy-port>
+        <user>root</user>
+        <use-password>true</use-password>
+        <password>dff1df92dff8dfd3dff7df82df9fdf81df84dffcdfe1df83</password>
+        <private-key-path />
+        <passphrase />
+      </ssh-properties>
+    </data-source>
+  </component>
+</project>
+

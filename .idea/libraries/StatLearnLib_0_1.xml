@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="StatLearnLib-0.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/StatLearnLib-0.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

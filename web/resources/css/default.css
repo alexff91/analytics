@@ -1,3 +1,59 @@
 .ui-widget, .ui-widget .ui-widget {
-    font-size: 110%;
+    font-size: 120%;
+}
+
+.firstColColored {
+    background: #ebe9f9; /* Old browsers */
+    background: -moz-linear-gradient(top, #ebe9f9 0%, #d8d0ef 50%, #cec7ec 51%, #c1bfea 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ebe9f9), color-stop(50%, #d8d0ef), color-stop(51%, #cec7ec), color-stop(100%, #c1bfea)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #ebe9f9 0%, #d8d0ef 50%, #cec7ec 51%, #c1bfea 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ebe9f9 0%, #d8d0ef 50%, #cec7ec 51%, #c1bfea 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #ebe9f9 0%, #d8d0ef 50%, #cec7ec 51%, #c1bfea 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #ebe9f9 0%, #d8d0ef 50%, #cec7ec 51%, #c1bfea 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ebe9f9', endColorstr='#c1bfea', GradientType=0); /* IE6-9 */
+
+    font-size: 120%;
+    font-weight: bold;
+}
+
+.ui-datatable tbody td {
+    border-color: rgba(118, 118, 118, 0.36);
+}
+
+.fixed-size {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.ui-datatable-resizable thead th, .ui-datatable-resizable tbody td, .ui-datatable-resizable tfoot td {
+    white-space: normal;
+}
+
+.ui-datatable tbody td, .ui-datatable tfoot td {
+    padding: 4px 10px;
+    overflow: hidden;
+    white-space: normal;
+    border-width: 3px;
+    border-style: solid;
+}
+
+.datasetTable, .correlations, .statistics, .stepwiseforwardselection {
+    border: 1px black; /* Граница вокруг ячеек */
+}
+
+td, th {
+    text-align: center;
+    border: 1px black; /* Граница вокруг ячеек */
+}
+
+li {
+    font-size: 24px
+}
+
+body {
+    font-size: 22px
+}
+
+html {
+    font-size: 22px
 }

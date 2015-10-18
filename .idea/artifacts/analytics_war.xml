@@ -1,9 +1,21 @@
 <component name="ArtifactManager">
-  <artifact type="war" build-on-make="true" name="analytics:war">
+  <artifact type="war" name="analytics:war">
     <output-path>C:/IdeaProjects/analytics/out/artifacts/analytics_war.war</output-path>
     <root id="archive" name="analytics_war.war">
       <element id="artifact" artifact-name="analytics:war exploded" />
-      <element id="library" level="project" name="Maven: org.primefaces.themes:all-themes:1.0.10" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="C:/IdeaProjects/analytics/out/artifacts/analytics_war_exploded.war/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="StatLearnLib-0.1" />
+          <element id="library" level="project" name="Jama-1.0.3" />
+          <element id="library" level="project" name="jxl" />
+          <element id="library" level="project" name="javastat" />
+          <element id="library" level="project" name="jsci-core-1.1" />
+          <element id="library" level="project" name="Maven: commons-io:commons-io:2.4" />
+        </element>
+      </element>
     </root>
   </artifact>
 </component>

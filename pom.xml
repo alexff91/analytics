@@ -7,13 +7,23 @@
     <groupId>analytics</groupId>
     <artifactId>analytics</artifactId>
     <version>1.0-SNAPSHOT</version>
-
+    <packaging>ear</packaging>
+    <name>Analytics</name>
     <repositories>
         <repository>
             <id>prime-repo</id>
             <name>Prime Repo</name>
             <url>http://repository.primefaces.org</url>
         </repository>
+
+
+        <repository>
+            <url>http://download.eclipse.org/rt/eclipselink/maven.repo/</url>
+            <id>eclipselink</id>
+            <layout>default</layout>
+            <name>Repository for library Library[eclipselink]</name>
+        </repository>
+
     </repositories>
 
     <dependencies>
@@ -64,9 +74,9 @@
             <version>2.1.11</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.faces</groupId>
-            <artifactId>jsf-impl</artifactId>
-            <version>2.1.11</version>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.faces</artifactId>
+            <version>2.1.6</version>
         </dependency>
         <dependency>
             <groupId>org.primefaces.themes</groupId>
@@ -81,8 +91,8 @@
 
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
         </dependency>
 
         <dependency>
@@ -113,6 +123,11 @@
             <version>0.2.4</version>
         </dependency>
         <dependency>
+            <groupId>nz.ac.waikato.cms.weka</groupId>
+            <artifactId>weka-stable</artifactId>
+            <version>3.6.6</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>3.3</version>
@@ -122,7 +137,85 @@
             <artifactId>super-csv</artifactId>
             <version>2.3.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>7.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.ejb</groupId>
+            <artifactId>ejb-api</artifactId>
+            <version>${ejb-api-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>${primefaces-themes-artifact}</artifactId>
+            <version>${primefaces-themes-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>javax.faces-api</artifactId>
+            <version>${javax-faces-api-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.omnifaces</groupId>
+            <artifactId>omnifaces</artifactId>
+            <version>${omnifaces-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+
+
     </dependencies>
 
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven-source>1.6</maven-source>
+        <maven-target>1.6</maven-target>
+        <maven-ejb-plugin-version>2.3</maven-ejb-plugin-version>
+        <maven-war-plugin-version>2.1.1</maven-war-plugin-version>
+        <maven-dependency-plugin-version>2.1</maven-dependency-plugin-version>
+        <maven-resources-plugin-version>2.4.3</maven-resources-plugin-version>
+        <maven-compiler-plugin-version>2.3.2</maven-compiler-plugin-version>
+
+        <eclipselink-persistence-version>2.4.0</eclipselink-persistence-version>
+        <eclipselink-jpa-version>2.3.2</eclipselink-jpa-version>
+        <javax-persistence-version>2.0.3</javax-persistence-version>
+        <javaee-web-api-version>6.0</javaee-web-api-version>
+        <ejb-api-version>3.0</ejb-api-version>
+        <javax-faces-api-version>2.1</javax-faces-api-version>
+        <omnifaces-version>1.4.1</omnifaces-version>
+        <primefaces-themes-artifact>aristo</primefaces-themes-artifact>
+        <primefaces-themes-version>1.0.8</primefaces-themes-version>
+        <netbeans.hint.deploy.server>gfv3ee6</netbeans.hint.deploy.server>
+
+    </properties>
 
 </project>

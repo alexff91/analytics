@@ -1,10 +1,11 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<ui:composition template="/templates/layout.xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+<ui:define name="content">
+<c:if test="#{loginController.loggedUser != null}">
 <h:head>
     <title>Data analysis</title>
 </h:head>
@@ -12,32 +13,43 @@
 <h:outputStylesheet name="css/default.css"/>
 <h:form enctype="multipart/form-data">
 <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true"/>
-<p:fileUpload update="tt dataValues"
+<p:fileUpload update="@form tt dataValues" process="@this" ajax="true" auto="true"
 
               fileUploadListener="#{bBean.handleFileUpload}" mode="advanced"
 
         />
+<p:commandButton value="Stored files" onclick="PF('filesList').show();" ajax="true"/>
+
 <p:growl autoUpdate="true"/>
 
 <p:panelMenu style="width:600px">
-    <p:submenu label="Apache Statistics">
-        <p:menuitem value="Descriptive statistics" actionListener="#{bBean.descriptiveStatistics}" ajax="false"/>
-        <p:menuitem value="Frequency distributions" actionListener="#{bBean.frequencyDistributions}" ajax="false"/>
+    <p:submenu label="Statistics">
+        <p:menuitem value="Descriptive statistics" actionListener="#{bBean.descriptiveStatistics}"
+                    ajax="false"/>
+        <p:menuitem value="Frequency distributions" actionListener="#{bBean.frequencyDistributions}"
+                    ajax="false"/>
         <p:menuitem value="Simple Regression" onclick="PF('dlgSimple').show();" ajax="true"/>
 
         <p:submenu label="Multiple Regression">
-            <p:menuitem value="OLS Multiple Linear Regression" onclick="PF('osldlg').show();" ajax="true"/>
-            <p:menuitem value="GLS Multiple Linear Regression" onclick="PF('glsdlg').show();" ajax="true"/>
+            <p:menuitem value="OLS Multiple Linear Regression" onclick="PF('osldlg').show();"
+                        ajax="true"/>
+            <p:menuitem value="GLS Multiple Linear Regression" onclick="PF('glsdlg').show();"
+                        ajax="true"/>
+            <p:menuitem value="Multiple Linear Regression" onclick="PF('multyRegDlg').show();"
+                        ajax="true"/>
+
         </p:submenu>
         <p:menuitem value="Rank transformations" onclick="PF('rankDlg').show();" ajax="true"/>
 
         <p:submenu label="Covariance and correlation">
             <p:menuitem
-                    value="Covariance, Kendalls's tau rank correlation coefficient, Spearman's rank correlation coefficient, Pearson's correlation"
-                    style="white-space:pre-line;width:500px; height: 60px;" onclick="PF('covdlg').show();" ajax="true"/>
+                    value="Covariance and correlation of 2 vars"
+                    style="white-space:pre-line;width:500px;font-size:24px "
+                    onclick="PF('covdlg').show();" ajax="true"/>
             <p:menuitem
-                    value="Covariance matrix, Pearson's correlation matrix, Pearson's correlation significance and standard errors"
-                    style="white-space:pre-line;width:500px;  height: 50px;" onclick="PF('covMatrixdlg').show();"
+                    value="Covariance and correlation of matrix"
+                    style="white-space:pre-line;width:500px;font-size:24px   "
+                    onclick="PF('covMatrixdlg').show();"
                     ajax="true"/>
         </p:submenu>
         <p:submenu label="Tests">
@@ -46,200 +58,299 @@
             <p:menuitem value="Chi-square tests" onclick="PF('chiSquare').show();" ajax="true"/>
             <p:menuitem value="G tests" onclick="PF('gTests').show();" ajax="true"/>
             <p:menuitem value="One-Way ANOVA tests" onclick="PF('anova').show();" ajax="true"/>
-            <p:menuitem value="Kolmogorov-Smirnov tests" onclick="PF('twotest').show();" ajax="true"/>
+            <p:menuitem value="Kolmogorov-Smirnov tests" onclick="PF('kolmogorov').show();"
+                        ajax="true"/>
         </p:submenu>
 
         <p:menuitem value="Add variable" onclick="PF('addVar').show();" ajax="true"/>
-        <p:menuitem value="Original data" actionListener="#{bBean.original}" ajax="true"/>
-
+        <p:menuitem value="Original data" actionListener="#{bBean.original}" ajax="false"/>
+        <p:menuitem value="Map variables" onclick="PF('mapVar').show();" ajax="true"/>
 
     </p:submenu>
-</p:panelMenu>
 
-<p:dialog global="true" header="Anova tests" widgetVar="anova" modal="true" minHeight="300"
+</p:panelMenu>
+<p:dialog global="true" header="Files list" widgetVar="filesList" modal="false" height="400"
+          minWidth="300"
+          dynamic="true">
+    <h:panelGroup>
+
+        <p:selectOneMenu var="myListItem" value="#{loginController.loggedUser.files}"
+                         style="width:300px">
+            <f:selectItems value="#{bBean.files}" var="file" itemLabel="#{file.name}"
+                           itemValue="#{file}"/>
+            <p:column width="200px">
+                <p:outputLabel style="font-size:20px;width: 150px;" value="#{myListItem.name}"/>
+            </p:column>
+        </p:selectOneMenu>
+
+
+        <p:commandButton style="font-size:20px;text-align: center;" value="Submit"
+                         onclick="PF('filesList').hide();" action="#{bBean.uploadSelectedFile()}"
+                         update="@form dataValues  description"/>
+    </h:panelGroup>
+</p:dialog>
+<p:dialog global="true" header="Anova tests" widgetVar="anova" modal="false" minHeight="300"
           dynamic="true">
 
     <h:panelGrid columns="4">
-        <h:outputLabel for="anovaData" value="Matrix:"/>
+        <h:outputLabel style="font-size:20px" for="anovaData" value="Matrix:"/>
         <p:selectCheckboxMenu id="anovaData" value="#{bBean.testsData}" label="Classes"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
 
-        <h:outputLabel for="anovaAlpha" value="significance level :"/>
-        <p:inputText id="anovaAlpha" value="#{bBean.alpha}"/>
+        <h:outputLabel style="font-size:20px" for="anovaAlpha" value="significance level :"/>
+        <p:inputText style="font-size:20px" id="anovaAlpha" value="#{bBean.alpha}"/>
 
-        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.anova()}"
-                         onclick="PF('anova').hide();" update="dataValues"/>
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.anova()}"
+                         onclick="PF('anova').hide();" update="dataValues description"/>
     </h:panelGrid>
 </p:dialog>
 
-<p:dialog global="true" header="T test" widgetVar="ttest" modal="true" minHeight="300"
+<p:dialog global="true" header="T test" widgetVar="ttest" modal="false" minHeight="300"
           dynamic="true">
 
     <h:panelGrid columns="4">
 
-        <h:outputLabel for="ttestData" value="X var:"/>
-        <p:selectOneMenu id="ttestData" value="#{bBean.selectedX}" label="Independant vars"
+        <h:outputLabel style="font-size:20px" for="ttestData" value="X var:"/>
+        <p:selectOneMenu style="font-size:20px" id="ttestData" value="#{bBean.selectedXTTEST}"
+                         label="Independant vars"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
-        <h:outputLabel for="muValue" value="Mu value:"/>
-        <p:inputText id="muValue" value="#{bBean.muValue}"/>
-        <h:outputLabel for="alpha" value="Alpha value:"/>
-        <p:inputText id="alpha" value="#{bBean.alpha}"/>
+        <h:outputLabel style="font-size:20px" for="muValue" value="Mu value:"/>
+        <p:inputText style="font-size:20px" id="muValue" value="#{bBean.muValue}"/>
+        <h:outputLabel style="font-size:20px" for="alpha" value="Alpha value:"/>
+        <p:inputText style="font-size:20px" id="alpha" value="#{bBean.alpha}"/>
 
-        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.ttest()}"
-                         onclick="PF('ttest').hide();" update="dataValues"/>
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.ttest()}"
+                         onclick="PF('ttest').hide();" update="dataValues description"/>
     </h:panelGrid>
 </p:dialog>
 
-<p:dialog global="true" header="T test" widgetVar="twotest" modal="true" minHeight="300"
+<p:dialog global="true" header="Kolmogorov-Smirnov tests" widgetVar="kolmogorov" modal="false"
+          minHeight="300"
           dynamic="true">
 
     <h:panelGrid columns="4">
 
-        <h:outputLabel for="twotestDataX" value="X var:"/>
-        <p:selectOneMenu id="twotestDataX" value="#{bBean.selectedX}" label="X var"
+        <h:outputLabel style="font-size:20px" for="colmoDataX" value="X var:"/>
+        <p:selectOneMenu style="font-size:20px" id="colmoDataX" value="#{bBean.selectedXKolmogorov}"
+                         label="X var"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
-        <h:outputLabel for="twotestDataY" value="Y var:"/>
-        <p:selectOneMenu id="twotestDataY" value="#{bBean.selectedY}" label="Y var"
+        <h:outputLabel style="font-size:20px" for="colmoDataY" value="Y var:"/>
+        <p:selectOneMenu style="font-size:20px" id="colmoDataY" value="#{bBean.selectedYKolmogorov}"
+                         label="Y var"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
-        </p:selectOneMenu>
-
-        <h:outputLabel for="twoAlpha" value="Alpha value:"/>
-        <p:inputText id="twoAlpha" value="#{bBean.alpha}"/>
-
-        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.twotest()}"
-                         onclick="PF('twotest').hide();" update="dataValues"/>
-    </h:panelGrid>
-</p:dialog>
-
-<p:dialog global="true" header="Chi-square tests" widgetVar="chiSquare" modal="true" minHeight="300"
-          dynamic="true">
-
-    <h:panelGrid columns="4">
-
-        <h:outputLabel for="chiSquareDataX" value="X var:"/>
-        <p:selectOneMenu id="chiSquareDataX" value="#{bBean.selectedX}" label="X var"
-                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
-        </p:selectOneMenu>
-        <h:outputLabel for="chiSquareDataY" value="Y var:"/>
-        <p:selectOneMenu id="chiSquareDataY" value="#{bBean.selectedY}" label="Y var"
-                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
 
-        <h:outputLabel for="chiSquareAlpha" value="Alpha value:"/>
-        <p:inputText id="chiSquareAlpha" value="#{bBean.alpha}"/>
+        <h:outputLabel style="font-size:20px" for="colmoAlpha" value="Alpha value:"/>
+        <p:inputText style="font-size:20px" id="colmoAlpha" value="#{bBean.alpha}"/>
 
-        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.chiSquare()}"
-                         onclick="PF('chiSquare').hide();" update="dataValues"/>
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.kolmogorov()}"
+                         onclick="PF('kolmogorov').hide();" update="dataValues description"/>
     </h:panelGrid>
 </p:dialog>
 
 
-<p:dialog global="true" header="G tests" widgetVar="gTests" modal="true" minHeight="300"
+<p:dialog global="true" header="T test" widgetVar="twotest" modal="false" minHeight="300"
           dynamic="true">
 
     <h:panelGrid columns="4">
 
-        <h:outputLabel for="gDataX" value="X var:"/>
-        <p:selectOneMenu id="gDataX" value="#{bBean.selectedX}" label="X var"
+        <h:outputLabel style="font-size:20px" for="twotestDataX" value="X var:"/>
+        <p:selectOneMenu style="font-size:20px" id="twotestDataX" value="#{bBean.selectedXTwoT}"
+                         label="X var"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
-        <h:outputLabel for="gDataY" value="Y var:"/>
-        <p:selectOneMenu id="gDataY" value="#{bBean.selectedY}" label="Y var"
+        <h:outputLabel style="font-size:20px" for="twotestDataY" value="Y var:"/>
+        <p:selectOneMenu style="font-size:20px" id="twotestDataY" value="#{bBean.selectedYTwoT}"
+                         label="Y var"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
 
-        <h:outputLabel for="gAlpha" value="Alpha value:"/>
-        <p:inputText id="gAlpha" value="#{bBean.alpha}"/>
+        <h:outputLabel style="font-size:20px" for="twoAlpha" value="Alpha value:"/>
+        <p:inputText style="font-size:20px" id="twoAlpha" value="#{bBean.alpha}"/>
 
-        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.gtest()}"
-                         onclick="PF('gTests').hide();" update="dataValues"/>
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.twotest()}"
+                         onclick="PF('twotest').hide();" update="dataValues description"/>
     </h:panelGrid>
 </p:dialog>
 
-<p:dialog global="true" header="Create new parameter" widgetVar="addVar" modal="true" minHeight="300"
+<p:dialog global="true" header="Chi-square tests" widgetVar="chiSquare" modal="false"
+          minHeight="300"
           dynamic="true">
 
     <h:panelGrid columns="4">
 
-        <h:outputLabel for="firstVar" value="X var:"/>
-        <p:selectOneMenu id="firstVar" value="#{bBean.selectedX}" label="Independant vars"
+        <h:outputLabel style="font-size:20px" for="chiSquareDataX" value="X var:"/>
+        <p:selectOneMenu style="font-size:20px" id="chiSquareDataX" value="#{bBean.selectedXChi}"
+                         label="X var"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectOneMenu>
+        <h:outputLabel style="font-size:20px" for="chiSquareDataY" value="Y var:"/>
+        <p:selectOneMenu style="font-size:20px" id="chiSquareDataY" value="#{bBean.selectedYChi}"
+                         label="Y var"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
 
-        <h:outputLabel for="secondVar" value="Y var:"/>
-        <p:selectOneMenu id="secondVar" value="#{bBean.selectedY}" label="Y vars"
+        <h:outputLabel style="font-size:20px" for="chiSquareAlpha" value="Alpha value:"/>
+        <p:inputText style="font-size:20px" id="chiSquareAlpha" value="#{bBean.alpha}"/>
+
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.chiSquare()}"
+                         onclick="PF('chiSquare').hide();" update="dataValues chiOut description"/>
+
+    </h:panelGrid>
+</p:dialog>
+
+
+<p:dialog global="true" header="G tests" widgetVar="gTests" modal="false" minHeight="300"
+          dynamic="true">
+
+    <h:panelGrid columns="4">
+
+        <h:outputLabel style="font-size:20px" for="gDataX" value="X var:"/>
+        <p:selectOneMenu style="font-size:20px" id="gDataX" value="#{bBean.selectedXGTest}"
+                         label="X var"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectOneMenu>
+        <h:outputLabel style="font-size:20px" for="gDataY" value="Y var:"/>
+        <p:selectOneMenu style="font-size:20px" id="gDataY" value="#{bBean.selectedYGTest}"
+                         label="Y var"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
 
-        <h:outputLabel for="operation" value="Type of operation:"/>
-        <p:selectOneMenu id="operation" label="Operations" value="#{bBean.operation}"
+        <h:outputLabel style="font-size:20px" for="gAlpha" value="Alpha value:"/>
+        <p:inputText style="font-size:20px" id="gAlpha" value="#{bBean.alpha}"/>
+
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.gtest()}"
+                         onclick="PF('gTests').hide();" update="dataValues description"/>
+    </h:panelGrid>
+</p:dialog>
+
+<p:dialog global="true" header="Map variable" widgetVar="mapVar" modal="false" height="400"
+          width="600"
+          dynamic="true">
+
+    <h:panelGrid columns="2">
+
+        <h:outputLabel style="font-size:20px" for="selMap" value="Mapped column:"/>
+        <p:selectOneMenu style="font-size:20px" id="selMap" value="#{bBean.selectedMapping}"
+                         label="Mapped columns"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectOneMenu>
+
+        <h:outputLabel style="font-size:20px" for="keyName" value="Name of variable:"/>
+        <p:inputText style="font-size:20px" id="keyName" value="#{bBean.keyMapped}"/>
+        <h:outputLabel style="font-size:20px" for="valueName" value="Value of var:"/>
+        <p:inputText style="font-size:20px" id="valueName" value="#{bBean.valueMapped}"/>
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.mapVariables()}"
+                         onclick="PF('mapVar').hide();" update="dataValues dataMaps description"/>
+    </h:panelGrid>
+</p:dialog>
+
+<p:dialog global="true" header="Create new parameter" widgetVar="addVar" modal="false"
+          minHeight="300"
+          dynamic="true">
+
+    <h:panelGrid columns="4">
+
+        <h:outputLabel style="font-size:20px" for="firstVar" value="X var:"/>
+        <p:selectOneMenu style="font-size:20px" id="firstVar" value="#{bBean.selectedX}"
+                         label="Independant vars"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectOneMenu>
+
+        <h:outputLabel style="font-size:20px" for="secondVar" value="Y var:"/>
+        <p:selectOneMenu style="font-size:20px" id="secondVar" value="#{bBean.selectedY}"
+                         label="Y vars"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectOneMenu>
+
+        <h:outputLabel style="font-size:20px" for="operation" value="Type of operation:"/>
+        <p:selectOneMenu style="font-size:20px" id="operation" label="Operations"
+                         value="#{bBean.operation}"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
             <f:selectItem itemLabel="multiply" itemValue="multiply"/>
             <f:selectItem itemLabel="extract" itemValue="extract"/>
             <f:selectItem itemLabel="divide" itemValue="divide"/>
             <f:selectItem itemLabel="add" itemValue="add"/>
         </p:selectOneMenu>
-        <h:outputLabel for="varName" value="Name of variable:"/>
-        <p:inputText id="varName" value="#{bBean.varName}"/>
-        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.addVariable()}"
-                         onclick="PF('addVar').hide();" update="dataValues"/>
+        <h:outputLabel style="font-size:20px" for="varName" value="Name of variable:"/>
+        <p:inputText style="font-size:20px" id="varName" value="#{bBean.varName}"/>
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.addVariable()}"
+                         onclick="PF('addVar').hide();" update="dataValues description"/>
     </h:panelGrid>
 </p:dialog>
 
-<p:dialog global="true" header="Parameters of Covariance Matrixes" widgetVar="covMatrixdlg" modal="true" minHeight="300"
+<p:dialog global="true" header="Parameters of Covariance Matrixes" widgetVar="covMatrixdlg"
+          modal="false" minHeight="300"
           dynamic="true">
 
     <h:panelGrid columns="4">
-        <h:outputLabel for="dataCov" value="Matrix:"/>
+        <h:outputLabel style="font-size:20px" for="dataCov" value="Matrix:"/>
         <p:selectCheckboxMenu id="dataCov" value="#{bBean.matrixDataCov}" label="Independant vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
-        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.covariance()}"
-                         onclick="PF('covMatrixdlg').hide();" update="dataValues"/>
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.covariance()}"
+                         onclick="PF('covMatrixdlg').hide();" update="dataValues description"/>
     </h:panelGrid>
 </p:dialog>
 
-<p:dialog global="true" header="Parameters of OLS Multiple Linear Regression" widgetVar="osldlg" modal="true"
+<p:dialog global="true" header="Parameters of OLS Multiple Linear Regression" widgetVar="osldlg"
+          modal="false"
           minHeight="300" dynamic="true">
 
     <h:panelGrid columns="4">
-        <h:outputLabel for="depMenu" value="Dependant vars:"/>
-        <p:selectOneMenu id="depMenu" value="#{bBean.selectedDepVars}" label="Dependant vars"
+        <h:outputLabel style="font-size:20px" for="depMenu" value="Dependant vars:"/>
+        <p:selectOneMenu style="font-size:20px" id="depMenu" value="#{bBean.selectedDepVarsOLS}"
+                         label="Dependant vars"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
-                         update="displayIndep displayDep">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+                         update="displayIndep displayDep description">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
-        <h:outputLabel for="indepMenu" value="Inpendant var:"/>
-        <p:selectCheckboxMenu id="indepMenu" value="#{bBean.selectedIndepVars}" label="Independant vars"
+        <h:outputLabel style="font-size:20px" for="indepMenu" value="Inpendant var:"/>
+        <p:selectCheckboxMenu id="indepMenu" value="#{bBean.selectedIndepVarsOLS}"
+                              label="Independant vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
-        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.multipleRegressionOls}"
-                         onclick="PF('osldlg').hide();" update="dataValues"/>
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.multipleRegressionOls}"
+                         onclick="PF('osldlg').hide();" update="dataValues description"/>
     </h:panelGrid>
 </p:dialog>
 
-<p:dialog global="true" header="Parameters of Rank Transform" widgetVar="rankDlg" modal="true" minHeight="400"
+<p:dialog global="true" header="Parameters of Rank Transform" widgetVar="rankDlg" modal="false"
+          minHeight="400"
           dynamic="true">
 
     <h:panelGrid columns="4">
-        <h:outputLabel for="tieMenu" value="Ties strategy:"/>
-        <p:selectOneMenu id="tieMenu" value="#{bBean.tieStrategy}"
+        <h:outputLabel style="font-size:20px" for="tieMenu" value="Ties strategy:"/>
+        <p:selectOneMenu style="font-size:20px" id="tieMenu" value="#{bBean.tieStrategy}"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
             <f:selectItem itemLabel="SEQUENTIAL" itemValue="SEQUENTIAL" noSelectionOption="true"/>
             <f:selectItem itemLabel="MINIMUM" itemValue="MINIMUM"/>
@@ -247,8 +358,8 @@
             <f:selectItem itemLabel="AVERAGE" itemValue="AVERAGE"/>
             <f:selectItem itemLabel="RANDOM" itemValue="RANDOM"/>
         </p:selectOneMenu>
-        <h:outputLabel for="nanMenu" value="Nan strategy:"/>
-        <p:selectOneMenu id="nanMenu" value="#{bBean.nanStrategy}"
+        <h:outputLabel style="font-size:20px" for="nanMenu" value="Nan strategy:"/>
+        <p:selectOneMenu style="font-size:20px" id="nanMenu" value="#{bBean.nanStrategy}"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
             <f:selectItem itemLabel="MINIMAL" itemValue="MINIMAL" noSelectionOption="true"/>
             <f:selectItem itemLabel="MAXIMAL" itemValue="MAXIMAL"/>
@@ -257,100 +368,161 @@
             <f:selectItem itemLabel="FAILED" itemValue="FAILED"/>
 
         </p:selectOneMenu>
-        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.rankTransform()}"
-                         onclick="PF('rankDlg').hide();" update="dataValues"/>
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.rankTransform()}"
+                         onclick="PF('rankDlg').hide();" update="dataValues description"/>
     </h:panelGrid>
 </p:dialog>
 
 
-<p:dialog global="true" header="Parameters of Covariance" widgetVar="covdlg" modal="true" minHeight="300"
+<p:dialog global="true" header="Parameters of Covariance" widgetVar="covdlg" modal="false"
+          minHeight="300"
           dynamic="true">
 
     <h:panelGrid columns="4">
 
-        <h:outputLabel for="indepMenuCov" value="X var:"/>
-        <p:selectOneMenu id="indepMenuCov" value="#{bBean.selectedX}" label="Independant vars"
+        <h:outputLabel style="font-size:20px" for="indepMenuCov" value="X var:"/>
+        <p:selectOneMenu style="font-size:20px" id="indepMenuCov" value="#{bBean.selectedXCovar}"
+                         label="Independant vars"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
 
-        <h:outputLabel for="obsMenuCov" value="Y var:"/>
-        <p:selectOneMenu id="obsMenuCov" value="#{bBean.selectedY}" label="Y vars"
+        <h:outputLabel style="font-size:20px" for="obsMenuCov" value="Y var:"/>
+        <p:selectOneMenu style="font-size:20px" id="obsMenuCov" value="#{bBean.selectedYCovar}"
+                         label="Y vars"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
-        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.pearsonsCorrelation()}"
-                         onclick="PF('covdlg').hide();" update="dataValues"/>
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.pearsonsCorrelation()}"
+                         onclick="PF('covdlg').hide();" update="dataValues description"/>
     </h:panelGrid>
 </p:dialog>
 
-<p:dialog global="true" header="Parameters of GLS Multiple Linear Regression" widgetVar="glsdlg" modal="true"
+<p:dialog global="true" header="Parameters of GLS Multiple Linear Regression" widgetVar="glsdlg"
+          modal="false"
           minHeight="300" dynamic="true">
 
     <h:panelGrid columns="4">
-        <h:outputLabel for="depMenuGls" value="Dependant vars:"/>
-        <p:selectOneMenu id="depMenuGls" value="#{bBean.selectedDepVars}" label="Dependant vars"
+        <h:outputLabel style="font-size:20px" for="depMenuGls" value="Dependant vars:"/>
+        <p:selectOneMenu style="font-size:20px" id="depMenuGls" value="#{bBean.selectedDepVars}"
+                         label="Dependant vars"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
-                         update="displayIndep displayDep">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+                         update="displayIndep displayDep description bar">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
-        <h:outputLabel for="indepMenuGls" value="Inpendant var:"/>
-        <p:selectCheckboxMenu id="indepMenuGls" value="#{bBean.selectedIndepVars}" label="Independant vars"
+        <h:outputLabel style="font-size:20px" for="indepMenuGls" value="Inpendant var:"/>
+        <p:selectCheckboxMenu id="indepMenuGls" value="#{bBean.selectedIndepVars}"
+                              label="Independant vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
-                              update="displayIndep displayDep">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+                              update="displayIndep displayDep description bar">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
 
-        <h:outputLabel for="obsMenuGls" value="Observation var:"/>
-        <p:selectCheckboxMenu id="obsMenuGls" value="#{bBean.selectedObsVars}" label="Observation vars"
+        <h:outputLabel style="font-size:20px" for="obsMenuGls" value="Observation var:"/>
+        <p:selectCheckboxMenu id="obsMenuGls" value="#{bBean.selectedObsVars}"
+                              label="Observation vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
-        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.multipleRegressionGls}"
-                         onclick="PF('dlg').hide();" update="dataValues"/>
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.multipleRegressionGls}"
+                         onclick="PF('dlg').hide();" update="dataValues description"/>
     </h:panelGrid>
 </p:dialog>
 
+<p:dialog global="true" header="Parameters of Multiple Linear Regression With Various Methods"
+          widgetVar="multyRegDlg"
+          modal="false"
+          minHeight="400" dynamic="true">
 
-<p:dialog global="true" header="Parameters of simple regression" widgetVar="dlgSimple" modal="true" minHeight="300"
+    <h:panelGrid columns="4">
+        <h:outputLabel style="font-size:20px" for="depMenuMultReg" value="Dependant vars:"/>
+        <p:selectOneMenu style="font-size:20px" id="depMenuMultReg"
+                         value="#{bBean.selectedDepVarMultipleReg}" label="Dependant vars"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
+                         update="displayIndep displayDep description bar">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectOneMenu>
+        <h:outputLabel style="font-size:20px" for="indepMenuMultReg" value="Inpendant var:"/>
+        <p:selectCheckboxMenu id="indepMenuMultReg" value="#{bBean.selectedInDepVarMultipleReg}"
+                              label="Independant vars"
+                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
+                              update="displayIndep displayDep description bar">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectCheckboxMenu>
+
+        <h:outputLabel style="font-size:20px" for="methodReg" value="Method:"/>
+        <p:selectOneMenu style="font-size:20px" id="methodReg" value="#{bBean.methodReg}"
+                         label="Method of Regression"
+                         filter="true" filterMatchMode="startsWith" panelStyle="width:300px"
+                         update="displayIndep displayDep description bar">
+            <f:selectItems value="#{bBean.methodsArray}"/>
+        </p:selectOneMenu>
+        <!--<h:outputLabel style="font-size:20px" for="treshold" value="significance level :"/>-->
+        <!--<p:inputText style="font-size:20px" id="treshold" value="#{bBean.alpha}"/>-->
+        <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.multipleRegressionStat}"
+                         onclick="PF('dlg').hide();" update="dataValues description"/>
+    </h:panelGrid>
+</p:dialog>
+
+<p:dialog global="true" header="Parameters of simple regression" widgetVar="dlgSimple" modal="false"
+          minHeight="300"
           dynamic="true">
 
     <h:panelGrid columns="4">
-        <h:outputLabel for="indepMenuSimple" value="Independant vars:"/>
-        <p:selectOneMenu id="indepMenuSimple" value="#{bBean.selectedInDep}" label="Independant vars"
+        <h:outputLabel style="font-size:20px" for="indepMenuSimple" value="Independant vars:"/>
+        <p:selectOneMenu style="font-size:20px" id="indepMenuSimple" value="#{bBean.selectedInDep}"
+                         label="Independant vars"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
-                         update="displayIndep displayDep">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+                         update="displayIndep displayDep description">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
-        <h:outputLabel for="depMenuSimple" value="Dependant vars:"/>
-        <p:selectOneMenu id="depMenuSimple" value="#{bBean.selectedDep}" label="Dependant vars"
+        <h:outputLabel style="font-size:20px" for="depMenuSimple" value="Dependant vars:"/>
+        <p:selectOneMenu style="font-size:20px" id="depMenuSimple" value="#{bBean.selectedDep}"
+                         label="Dependant vars"
                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
-                         update="displayIndep displayDep">
-            <f:selectItems value="#{bBean.columnTemplate}"/>
+                         update="displayIndep displayDep description">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
-        <p:commandButton value="Submit" icon="ui-icon-check" actionListener="#{bBean.simpleRegression}"
-                         onclick="PF('dlgSimple').hide();" update="dataValues"/>
+        <p:commandButton style="font-size:30px;" value="Submit" icon="ui-icon-check"
+                         actionListener="#{bBean.simpleRegression}"
+                         onclick="PF('dlgSimple').hide();" update="dataValues description"/>
     </h:panelGrid>
 
 
+</p:dialog>
+
+<p:dialog global="true" header="Edit columns headers" widgetVar="colTemp" modal="false" height="400"
+          minWidth="300"
+          dynamic="true">
+    <p:growl id="growl"/>
+    <p:scrollPanel> <p:dataList var="myListItem" value="#{bBean.statisticsColumnTemplate}">
+        <p:inputText style="font-size:20px" value="#{myListItem}"/>
+    </p:dataList></p:scrollPanel>
+
+    <p:commandButton style="font-size:20px" value="Submit" onclick="PF('colTemp').hide();"
+                     update="@form dataValues growl description"/>
 </p:dialog>
 <!--allowTypes="/(\.|\/)(xlsx)$/"-->
 <p:growl id="tt" showDetail="true"/>
 
-
-<p:dataTable id="dataValues" rowIndexVar="rowId" var="dataVal" value="#{bBean.dataValues}" widgetVar="dataValuesTable"
-             scrollHeight="65%" resizableColumns="true" liveResize="true" scrollWidth="100%" scrollable="true"
-
-             paginator="true" rows="20"
+<p:remoteCommand name="onCellEdit" update="@form"/>
+<p:dataTable id="dataValues" rowIndexVar="rowId" var="dataVal" value="#{bBean.dataValues}"
+             widgetVar="dataValuesTable"
+             editable="true" editMode="cell"
+             scrollHeight="500px" resizableColumns="true" liveResize="false" scrollWidth="100%"
+             scrollable="true"
+             ajax="true" paginator="true" rows="20" styleClass="fixed-size"
              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
              rowsPerPageTemplate="20,50,100">
     <f:facet name="header">
-        Data Statistics
-
-        <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator"/>
-        <p:columnToggler datasource="dataValues" trigger="toggler"/>
+        <h:outputText value="#{bBean.tableHeader}"/>
     </f:facet>
+    <p:ajax event="cellEdit" listener="#{bBean.onCellEdit}" oncomplete="onCellEdit()"/>
     <f:facet name="{Exporters}">
         <h:commandLink>
             <p:graphicImage value="/resources/images/excel.png" width="24"/>
@@ -367,16 +539,55 @@
             <p:dataExporter type="xml" target="dataValues" fileName="statistics"/>
         </h:commandLink>
     </f:facet>
+
     <p:columns value="#{bBean.columns}" var="column" columnIndexVar="statistics"
-               width="200">
+               width="200"
+               styleClass="ui-editable-column #{column.index eq 0  and ((bBean.tableHeader ne 'Data values') and (bBean.tableHeader ne 'Rank Transform') )? 'firstColColored' : ''}">
         <f:facet name="header">
             <h:outputText value="#{column.header}"/>
         </f:facet>
-        <h:outputText value="#{dataVal.getValues(rowId+1, column.index)}"/>
+
+        <p:cellEditor>
+            <f:facet name="output"><h:outputText
+                    value="#{dataVal.getRowValues()[column.index]}"/></f:facet>
+            <f:facet name="input"><p:inputText value="#{dataVal.getRowValues()[column.index]}"
+                                               style="width:96%"/></f:facet>
+
+        </p:cellEditor>
     </p:columns>
 
-
 </p:dataTable>
+
+<h2>Mapped Variables</h2>
+
+<p:dataList id="dataMaps" value="#{bBean.mapOfValues}" var="productEntry">
+
+    <h:outputText value="#{productEntry}"/>
+
+
+</p:dataList>
+
+<h2>Description</h2>
+<h:outputText id="description" escape="false" value="#{bBean.description}"></h:outputText>
+
+<h2>Chart</h2>
+<p:chart type="bar" model="#{bBean.barModel}" style="height:500px"
+         rendered="#{bBean.barModel ne null}"/>
+<script type="text/javascript">
+    function extLegend() {
+        this.cfg.legend = {
+            show: true,
+            location: 's',
+            placement: 'outsideGrid'
+        };
+
+    }
+</script>
+<h2>Output Statistics</h2>
+<h:outputText id="warningDose" escape="false" styleClass="redText"
+              value="#{bBean.output}"></h:outputText>
+<h:outputText id="chiOut" escape="false" styleClass="redText"
+              value="#{bBean.content}"></h:outputText>
 
 <h2>Export Page Data Only</h2>
 <h:commandLink>
@@ -395,6 +606,8 @@
 </h:commandLink>
 
 </h:form>
-</h:body>
 
-</html>
+</h:body>
+</c:if>
+</ui:define>
+</ui:composition>
