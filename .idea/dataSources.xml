@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="4174246369">
+  <component name="DataSourceManagerImpl" format="xml" hash="4231575734">
     <data-source source="LOCAL" name="Derby - simplecrud_db@localhost" uuid="d3198aa0-5301-4ee6-ae26-897b5f9e5388">
       <driver-ref>derby.remote</driver-ref>
       <synchronize>true</synchronize>
@@ -29,11 +29,11 @@
       <default-schemas>*.APP</default-schemas>
       <libraries />
     </data-source>
-    <data-source source="LOCAL" name="Derby - simplecrud_db@localhost [2]" uuid="b49f4b0b-4311-4740-b5cf-55c4f4810a51">
+    <data-source source="LOCAL" name="Derby - derbydata;create=true@localhost" uuid="b49f4b0b-4311-4740-b5cf-55c4f4810a51">
       <driver-ref>derby.remote</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.apache.derby.jdbc.ClientDriver</jdbc-driver>
-      <jdbc-url>jdbc:derby://localhost:1527/simplecrud_db</jdbc-url>
+      <jdbc-url>jdbc:derby://localhost:1527/opt/wildfly/sandalone/derbydata;create=true</jdbc-url>
       <schema-pattern>*</schema-pattern>
       <default-schemas>*.APP</default-schemas>
       <libraries />

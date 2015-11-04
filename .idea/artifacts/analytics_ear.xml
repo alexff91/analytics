@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="ear" name="analytics:ear">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="analytics-1.0-SNAPSHOT.ear">
+      <element id="artifact" artifact-name="analytics:ear exploded" />
+    </root>
+  </artifact>
+</component>

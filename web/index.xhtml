@@ -18,7 +18,8 @@
               fileUploadListener="#{bBean.handleFileUpload}" mode="advanced"
 
         />
-<p:commandButton value="Stored files" onclick="PF('filesList').show();" ajax="true"/>
+<p:commandButton value="Stored files" onclick="PF('filesList').show();" ajax="true"
+                 style="width:600px"/>
 
 <p:growl autoUpdate="true"/>
 
@@ -69,25 +70,30 @@
     </p:submenu>
 
 </p:panelMenu>
+
 <p:dialog global="true" header="Files list" widgetVar="filesList" modal="false" height="400"
           minWidth="300"
           dynamic="true">
-    <h:panelGroup>
+    <p:panelGrid columns="1">
 
-        <p:selectOneMenu var="myListItem" value="#{loginController.loggedUser.files}"
-                         style="width:300px">
-            <f:selectItems value="#{bBean.files}" var="file" itemLabel="#{file.name}"
-                           itemValue="#{file}"/>
-            <p:column width="200px">
-                <p:outputLabel style="font-size:20px;width: 150px;" value="#{myListItem.name}"/>
+        <p:selectOneMenu id="newUserRole"
+                         value="#{bBean.files}"
+                         showCheckbox="true" style="width:250px;" var="t">
+            <f:selectItems value="#{loginController.loggedUser.files}" var="file"
+                           itemValue="#{file}" itemLabel="#{file.filename}">
+
+            </f:selectItems>
+            <f:converter converterId="com.nz.util.FileConverter"/>
+            <p:column>
+                <h:outputText value="#{t.filename}"/>
             </p:column>
         </p:selectOneMenu>
 
 
-        <p:commandButton style="font-size:20px;text-align: center;" value="Submit"
+        <p:commandButton style="font-size:20px;text-align: center;" value="Open file"
                          onclick="PF('filesList').hide();" action="#{bBean.uploadSelectedFile()}"
                          update="@form dataValues  description"/>
-    </h:panelGroup>
+    </p:panelGrid>
 </p:dialog>
 <p:dialog global="true" header="Anova tests" widgetVar="anova" modal="false" minHeight="300"
           dynamic="true">

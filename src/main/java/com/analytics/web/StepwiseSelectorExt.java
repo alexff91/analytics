@@ -8,6 +8,8 @@ import java.util.Comparator;
 
 import multipleLinearRegression.Feature;
 import simpleLinearRegression.SimpleLinearRegression;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 public class StepwiseSelectorExt {
   private MultipleLinearRegressionExt regressionToSubset;

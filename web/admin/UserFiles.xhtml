@@ -74,7 +74,7 @@
 
                         <f:facet name="footer">
                             <p:commandButton value="Update" update=":form:dataTable, :growl"
-                                             oncomplete="handleSubmitRequest(xhr, status, args, 'userDlg','newUserForm'); "
+                                             oncomplete="PF('userDialog').hide();"
                                              actionListener="#{userController.doUpdateUser}"/>
                         </f:facet>
                     </p:panelGrid>
@@ -91,7 +91,6 @@
                         dialog.effect("shake", { times: 3 }, 100);
                     } else {
                         clearForm(formName);
-                        newUserDialog.hide();
                         userDialog.hide();
                     }
                 }
