@@ -139,10 +139,10 @@
 
     <h:panelGrid columns="4">
         <h:outputLabel style="font-size:20px" for="anovaData" value="Matrix:"/>
-        <p:selectCheckboxMenu id="anovaData" value="#{bBean.testsData}" label="Classes"
+        <p:pickList id="anovaData" value="#{bBean.testsData}" label="Classes"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
             <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-        </p:selectCheckboxMenu>
+        </p:pickList>
 
         <h:outputLabel style="font-size:20px" for="anovaAlpha" value="significance level :"/>
         <p:inputText style="font-size:20px" id="anovaAlpha" value="#{bBean.alpha}"/>
@@ -354,10 +354,10 @@
 
     <h:panelGrid columns="4">
         <h:outputLabel style="font-size:20px" for="dataCov" value="Matrix:"/>
-        <p:selectCheckboxMenu id="dataCov" value="#{bBean.matrixDataCov}" label="Independant vars"
+        <p:pickList id="dataCov" value="#{bBean.matrixDataCov}" label="Independant vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
             <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-        </p:selectCheckboxMenu>
+        </p:pickList>
         <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
                          actionListener="#{bBean.covariance()}"
                          onclick="PF('covMatrixdlg').hide();" update="dataValues description"/>
@@ -377,12 +377,12 @@
             <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
         <h:outputLabel style="font-size:20px" for="indepMenu" value="Inpendant var:"/>
-        <p:selectCheckboxMenu id="indepMenu" value="#{bBean.selectedIndepVarsOLS}"
+        <p:pickList id="indepMenu" value="#{bBean.selectedIndepVarsOLS}"
                               label="Independant vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep">
             <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-        </p:selectCheckboxMenu>
+        </p:pickList>
         <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
                          actionListener="#{bBean.multipleRegressionOls}"
                          onclick="PF('osldlg').hide();" update="dataValues description"/>
@@ -458,20 +458,20 @@
             <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
         <h:outputLabel style="font-size:20px" for="indepMenuGls" value="Inpendant var:"/>
-        <p:selectCheckboxMenu id="indepMenuGls" value="#{bBean.selectedIndepVars}"
+        <p:pickList id="indepMenuGls" value="#{bBean.selectedIndepVars}"
                               label="Independant vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep description bar">
             <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-        </p:selectCheckboxMenu>
+        </p:pickList>
 
         <h:outputLabel style="font-size:20px" for="obsMenuGls" value="Observation var:"/>
-        <p:selectCheckboxMenu id="obsMenuGls" value="#{bBean.selectedObsVars}"
+        <p:pickList id="obsMenuGls" value="#{bBean.selectedObsVars}"
                               label="Observation vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep">
             <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-        </p:selectCheckboxMenu>
+        </p:pickList>
         <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
                          actionListener="#{bBean.multipleRegressionGls}"
                          onclick="PF('dlg').hide();" update="dataValues description"/>
@@ -492,12 +492,12 @@
             <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
         <h:outputLabel style="font-size:20px" for="indepMenuMultReg" value="Inpendant var:"/>
-        <p:selectCheckboxMenu id="indepMenuMultReg" value="#{bBean.selectedInDepVarMultipleReg}"
+        <p:pickList id="indepMenuMultReg" value="#{bBean.selectedInDepVarMultipleReg}"
                               label="Independant vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep description bar">
             <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-        </p:selectCheckboxMenu>
+        </p:pickList>
 
         <h:outputLabel style="font-size:20px" for="methodReg" value="Method:"/>
         <p:selectOneMenu style="font-size:20px" id="methodReg" value="#{bBean.methodReg}"
