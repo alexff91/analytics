@@ -38,15 +38,17 @@ import org.supercsv.prefs.CsvPreference;
 public class ExporterBean implements Serializable {
   @Inject
   LoginController loginController;
+  private String descrStatData[];
+  private String freqDistribData[];
 
   public void descriptiveStatistics() {
     DescriptiveStatistics descriptiveStatistic = new DescriptiveStatistics(this);
-    descriptiveStatistic.descriptiveStatistics();
+    descriptiveStatistic.descriptiveStatistics(descrStatData);
   }
 
   public void frequencyDistributions() {
     FrequencyDistribution frequencyDistribution = new FrequencyDistribution(this);
-    frequencyDistribution.frequencyDistributions();
+    frequencyDistribution.frequencyDistributions(freqDistribData);
   }
 
   public void anova() {
@@ -613,6 +615,22 @@ public class ExporterBean implements Serializable {
     return barModel;
   }
 
+  public void setDescrStatData(String[] descrStatData) {
+    this.descrStatData = descrStatData;
+  }
+
+  public String[] getDescrStatData() {
+    return descrStatData;
+  }
+
+  public void setFreqDistribData(String[] freqDistribData) {
+    this.freqDistribData = freqDistribData;
+  }
+
+  public String[] getFreqDistribData() {
+    return freqDistribData;
+  }
+
   static public class ColumnModel implements Serializable {
 
     private String header;
@@ -640,6 +658,10 @@ public class ExporterBean implements Serializable {
     }
   }
 
+  /**
+   * Stores uploaded data into the users folder on server and parseing it for statistics
+   * @param event
+   */
   public void handleFileUpload(FileUploadEvent event) {
     try {
       FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -662,6 +684,14 @@ public class ExporterBean implements Serializable {
     }
   }
 
+  /**
+   * Depending on the current operation system stores the file
+   * @param facesContext
+   * @param fileName
+   * @param format
+   * @param inputStream
+   * @param needToStore
+   */
   private void uploadFileFromeDiskAndStore(final FacesContext facesContext, final String fileName,
       final String format, final InputStream inputStream, boolean needToStore) {
     File file;
@@ -801,12 +831,12 @@ public class ExporterBean implements Serializable {
       }
     }
     statisticsValues = new ArrayList<>(dataValues);
-
-    String[] ts = columnTemplate.toArray(new String[columnTemplate.size()]);
-    statisticsColumnTemplate = Lists.newArrayList(ts);
-    createDynamicColumns();
-    nullifyAll();
-    tableHeader = "Data values";
+		// don't need to show all data after uploading
+		// String[] ts = columnTemplate.toArray(new String[columnTemplate.size()]);
+		// statisticsColumnTemplate = Lists.newArrayList(ts);
+		// createDynamicColumns();
+		// nullifyAll();
+		// tableHeader = "Data values";
     mapOfColumns.clear();
     mapOfValues.clear();
   }
@@ -888,6 +918,9 @@ public class ExporterBean implements Serializable {
     }
   }
 
+  /**
+   * Adding a new column to the statistics dataset with choosen operation
+   */
   public void addVariable() {
     try {
       int dependant = 0;
