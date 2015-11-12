@@ -12,6 +12,12 @@
 <h:body>
 <h:outputStylesheet name="css/default.css"/>
 <h:form enctype="multipart/form-data">
+    <p:fieldset legend="Help" toggleable="true" collapsed="false">
+        1. Import or open already imported file.
+        2. After uploading the file watch the imported data.
+        3. Select statistics method.
+        4. To share uploaded file open the "User files" menu
+    </p:fieldset>
 <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true"/>
 <p:fileUpload update="@form tt dataValues" process="@this" ajax="true" auto="true"
 
