@@ -164,17 +164,17 @@ public class MultipleRegressionOLS implements Serializable {
               "<br><li> Calc. Residual Sum Of Squares - the sum of squared residuals" +
               "<br><li> Calc. Adjusted RSquared - the adjusted R-squared statistic, defined by the formula <pre>\n"
               +
-              "     * R<sup>2</sup><sub>adj</sub> = 1 - [SSR (n - 1)] / [SSTO (n - p)]\n" +
-              "     * </pre>\n" +
-              "     * where SSR is the sum of squared residuals},\n" +
-              "     * SSTO is the total sum of squares}, n is the number\n" +
-              "     * of observations and p is the number of parameters estimated (including the intercept).</p>\n"
+              "      R<sup>2</sup><sub>adj</sub> = 1 - [SSR (n - 1)] / [SSTO (n - p)]\n" +
+              "      </pre>\n" +
+              "      where SSR is the sum of squared residuals},\n" +
+              "      SSTO is the total sum of squares}, n is the number\n" +
+              "      of observations and p is the number of parameters estimated (including the intercept).</p>\n"
               +
-              "     *\n" +
-              "     * <p>If the regression is estimated without an intercept term, what is returned is <pre>\n"
+              "     \n" +
+              "      <p>If the regression is estimated without an intercept term, what is returned is <pre>\n"
               +
-              "     * <b> 1 - (1 - calculateRSquared}) * (n / (n - p)) </b>\n" +
-              "     * </pre></p>" +
+              "      <b> 1 - (1 - calculateRSquared}) * (n / (n - p)) </b>\n" +
+              "      </pre></p>" +
               "<br><li> Calc. Total Sum Of Squares -  the sum of squared deviations of Y from its mean.\n"
               +
               "     <br>  <p>If the model has no intercept term, <b>0</b> is used for the\n" +

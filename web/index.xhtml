@@ -12,28 +12,29 @@
 <h:body>
 <h:outputStylesheet name="css/default.css"/>
 <h:form enctype="multipart/form-data">
-    <p:fieldset legend="Help" toggleable="true" collapsed="false">
-        1. Import or open already imported file.
-        2. After uploading the file watch the imported data.
-        3. Select statistics method.
-        4. To share uploaded file open the "User files" menu
-    </p:fieldset>
+<p:fieldset legend="Help" toggleable="true" collapsed="false" style="width:570px">
+    <br>1. Import or open already imported file.</br>
+    <br>2. After uploading the file watch the imported data.</br>
+    <br>3. Select statistics method.</br>
+    <br>4. To share uploaded file open the "User files" menu.</br>
+</p:fieldset>
 <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true"/>
 <p:fileUpload update="@form tt dataValues" process="@this" ajax="true" auto="true"
-
+              style="width:600px"
               fileUploadListener="#{bBean.handleFileUpload}" mode="advanced"
-
         />
-<p:commandButton value="Stored files" onclick="PF('filesList').show();" ajax="true"
-                 style="width:600px"/>
 
 <p:growl autoUpdate="true"/>
 
 <p:panelMenu style="width:600px">
+    <p:submenu label="Stored files">
+        <p:menuitem value="Open file" onclick="PF('filesList').show();"
+                    ajax="true"/>
+    </p:submenu>
     <p:submenu label="Statistics">
         <p:menuitem value="Descriptive statistics" onclick="PF('descrStat').show();"
                     ajax="true"/>
-        <p:menuitem value="Frequency distributions"  onclick="PF('freqDistrib').show();"
+        <p:menuitem value="Frequency distributions" onclick="PF('freqDistrib').show();"
                     ajax="true"/>
         <p:menuitem value="Simple Regression" onclick="PF('dlgSimple').show();" ajax="true"/>
 
@@ -77,40 +78,43 @@
 
 </p:panelMenu>
 
-    <p:dialog global="true" header="Frequency distribution" widgetVar="freqDistrib" modal="false" minHeight="300"
-              dynamic="true">
+<p:dialog global="true" header="Frequency distribution" widgetVar="freqDistrib" modal="false"
+          minHeight="300"
+          dynamic="true">
 
-        <h:panelGrid columns="4">
-            <h:outputLabel style="font-size:20px" for="freqDistribData" value="Columns to calculate:"/>
-            <p:selectCheckboxMenu id="freqDistribData" value="#{bBean.freqDistribData}" label="Classes"
-                                  filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-                <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-            </p:selectCheckboxMenu>
+    <h:panelGrid columns="4">
+        <h:outputLabel style="font-size:20px" for="freqDistribData" value="Columns to calculate:"/>
+        <p:selectCheckboxMenu id="freqDistribData" value="#{bBean.freqDistribData}"
+                              label="Variables"
+                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectCheckboxMenu>
 
-            <p:commandButton style="font-size:20px" value="Run" icon="ui-icon-check"
-                             actionListener="#{bBean.frequencyDistributions}"
-                             onclick="PF('freqDistrib').hide();" update="dataValues description"/>
-        </h:panelGrid>
-    </p:dialog>
+        <p:commandButton style="font-size:20px" value="Run" icon="ui-icon-check"
+                         actionListener="#{bBean.frequencyDistributions}"
+                         onclick="PF('freqDistrib').hide();" update="dataValues description"/>
+    </h:panelGrid>
+</p:dialog>
 
 
-    <p:dialog global="true" header="Descriptive statistics" widgetVar="descrStat" modal="false" minHeight="300"
-              dynamic="true">
+<p:dialog global="true" header="Descriptive statistics" widgetVar="descrStat" modal="false"
+          minHeight="300"
+          dynamic="true">
 
-        <h:panelGrid columns="4">
-            <h:outputLabel style="font-size:20px" for="descrStatData" value="Columns to calculate:"/>
-            <p:selectCheckboxMenu id="descrStatData" value="#{bBean.descrStatData}" label="Classes"
-                                  filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-                <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-            </p:selectCheckboxMenu>
+    <h:panelGrid columns="4">
+        <h:outputLabel style="font-size:20px" for="descrStatData" value="Columns to calculate:"/>
+        <p:selectCheckboxMenu id="descrStatData" value="#{bBean.descrStatData}" label="Variables"
+                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectCheckboxMenu>
 
-            <p:commandButton style="font-size:20px" value="Run" icon="ui-icon-check"
-                             actionListener="#{bBean.descriptiveStatistics}"
-                             onclick="PF('descrStat').hide();" update="dataValues description"/>
-        </h:panelGrid>
-    </p:dialog>
+        <p:commandButton style="font-size:20px" value="Run" icon="ui-icon-check"
+                         actionListener="#{bBean.descriptiveStatistics}"
+                         onclick="PF('descrStat').hide();" update="dataValues description"/>
+    </h:panelGrid>
+</p:dialog>
 
-    <p:dialog global="true" header="Files list" widgetVar="filesList" modal="false" height="400"
+<p:dialog global="true" header="Files list" widgetVar="filesList" modal="false" height="400"
           minWidth="300"
           dynamic="true">
     <p:panelGrid columns="1">
@@ -139,10 +143,10 @@
 
     <h:panelGrid columns="4">
         <h:outputLabel style="font-size:20px" for="anovaData" value="Matrix:"/>
-        <p:pickList id="anovaData" value="#{bBean.testsData}" label="Classes"
+        <p:selectCheckboxMenu id="anovaData" value="#{bBean.testsData}" label="Classes"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-        </p:pickList>
+        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectCheckboxMenu>
 
         <h:outputLabel style="font-size:20px" for="anovaAlpha" value="significance level :"/>
         <p:inputText style="font-size:20px" id="anovaAlpha" value="#{bBean.alpha}"/>
@@ -354,10 +358,10 @@
 
     <h:panelGrid columns="4">
         <h:outputLabel style="font-size:20px" for="dataCov" value="Matrix:"/>
-        <p:pickList id="dataCov" value="#{bBean.matrixDataCov}" label="Independant vars"
-                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-        </p:pickList>
+        <p:selectManyMenu id="dataCov" value="#{bBean.matrixDataCov}" label="Independant vars"
+                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectManyMenu>
         <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
                          actionListener="#{bBean.covariance()}"
                          onclick="PF('covMatrixdlg').hide();" update="dataValues description"/>
@@ -377,12 +381,12 @@
             <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
         <h:outputLabel style="font-size:20px" for="indepMenu" value="Inpendant var:"/>
-        <p:pickList id="indepMenu" value="#{bBean.selectedIndepVarsOLS}"
+        <p:selectCheckboxMenu id="indepMenu" value="#{bBean.selectedIndepVarsOLS}"
                               label="Independant vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep">
-            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-        </p:pickList>
+        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectCheckboxMenu>
         <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
                          actionListener="#{bBean.multipleRegressionOls}"
                          onclick="PF('osldlg').hide();" update="dataValues description"/>
@@ -449,7 +453,7 @@
           modal="false"
           minHeight="300" dynamic="true">
 
-    <h:panelGrid columns="4">
+    <h:panelGrid columns="6">
         <h:outputLabel style="font-size:20px" for="depMenuGls" value="Dependant vars:"/>
         <p:selectOneMenu style="font-size:20px" id="depMenuGls" value="#{bBean.selectedDepVars}"
                          label="Dependant vars"
@@ -458,20 +462,20 @@
             <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
         <h:outputLabel style="font-size:20px" for="indepMenuGls" value="Inpendant var:"/>
-        <p:pickList id="indepMenuGls" value="#{bBean.selectedIndepVars}"
+        <p:selectCheckboxMenu id="indepMenuGls" value="#{bBean.selectedIndepVars}"
                               label="Independant vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep description bar">
-            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-        </p:pickList>
+        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectCheckboxMenu>
 
         <h:outputLabel style="font-size:20px" for="obsMenuGls" value="Observation var:"/>
-        <p:pickList id="obsMenuGls" value="#{bBean.selectedObsVars}"
+        <p:selectCheckboxMenu id="obsMenuGls" value="#{bBean.selectedObsVars}"
                               label="Observation vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep">
-            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-        </p:pickList>
+        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectCheckboxMenu>
         <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
                          actionListener="#{bBean.multipleRegressionGls}"
                          onclick="PF('dlg').hide();" update="dataValues description"/>
@@ -492,12 +496,12 @@
             <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
         <h:outputLabel style="font-size:20px" for="indepMenuMultReg" value="Inpendant var:"/>
-        <p:pickList id="indepMenuMultReg" value="#{bBean.selectedInDepVarMultipleReg}"
+        <p:selectCheckboxMenu id="indepMenuMultReg" value="#{bBean.selectedInDepVarMultipleReg}"
                               label="Independant vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep description bar">
-            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
-        </p:pickList>
+        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+        </p:selectCheckboxMenu>
 
         <h:outputLabel style="font-size:20px" for="methodReg" value="Method:"/>
         <p:selectOneMenu style="font-size:20px" id="methodReg" value="#{bBean.methodReg}"
@@ -557,7 +561,7 @@
 
 <p:remoteCommand name="onCellEdit" update="@form"/>
 <p:dataTable id="dataValues" rowIndexVar="rowId" var="dataVal" value="#{bBean.dataValues}"
-             widgetVar="dataValuesTable" stickyHeader="true" frozenColumns="0"
+             widgetVar="dataValuesTable" style="width: 100%;"
              editable="true" editMode="cell"
              scrollHeight="500px" resizableColumns="true" liveResize="false" scrollWidth="100%"
              scrollable="true"

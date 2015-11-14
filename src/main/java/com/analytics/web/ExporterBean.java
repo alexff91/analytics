@@ -38,7 +38,9 @@ import org.supercsv.prefs.CsvPreference;
 public class ExporterBean implements Serializable {
   @Inject
   LoginController loginController;
+
   private String descrStatData[];
+
   private String freqDistribData[];
 
   public void descriptiveStatistics() {
@@ -143,6 +145,8 @@ public class ExporterBean implements Serializable {
     try {
       FileInputStream fileInputStream = new FileInputStream(fileToUpload[0]);
       String fileName = files.getFilename();
+      FacesContext.getCurrentInstance().addMessage(fileName + "is uploaded" +
+          " ", new FacesMessage("File uploading", fileName + "is uploaded"));
       String format = fileName.substring(fileName.lastIndexOf("."), fileName.length());
       uploadFileFromeDiskAndStore(FacesContext.getCurrentInstance(),
           fileToUpload[0].getAbsolutePath(), format,
@@ -831,12 +835,12 @@ public class ExporterBean implements Serializable {
       }
     }
     statisticsValues = new ArrayList<>(dataValues);
-		// don't need to show all data after uploading
-		// String[] ts = columnTemplate.toArray(new String[columnTemplate.size()]);
-		// statisticsColumnTemplate = Lists.newArrayList(ts);
-		// createDynamicColumns();
-		// nullifyAll();
-		// tableHeader = "Data values";
+    // don't need to show all data after uploading
+    String[] ts = columnTemplate.toArray(new String[columnTemplate.size()]);
+    statisticsColumnTemplate = Lists.newArrayList(ts);
+    createDynamicColumns();
+    nullifyAll();
+    tableHeader = "Data values";
     mapOfColumns.clear();
     mapOfValues.clear();
   }

@@ -51,42 +51,46 @@ public class DescriptiveStatistics implements Serializable {
 					"Maximum", "Minimum", "N", "Skewness", "Sum of Squares", "Population Variance", "Variance" };
 			exporterBean.getColumnTemplate().addAll(Arrays.asList(propertyNames));
 			List<ChartSeries> seriesList = new LinkedList<ChartSeries>();
-			for (int i = 0; i < exporterBean.getStatisticsColumnTemplate().size(); i++) {
-				if (Arrays.asList(descrStatData).contains(exporterBean.getStatisticsColumnTemplate().get(i))) {
+      ;
+      for (int i = 0, propertiesCount = 0; i < exporterBean.getStatisticsColumnTemplate().size();
+          i++) {
+        if (Arrays.asList(descrStatData).contains(exporterBean.getStatisticsColumnTemplate().get(i))) {
 					properties.add(new ArrayList<String>());
-					properties.get(i).add(exporterBean.getStatisticsColumnTemplate().get(i));
-					ChartSeries chartSeries = new ChartSeries();
+          properties.get(propertiesCount).add(exporterBean.getStatisticsColumnTemplate().get(i));
+          ChartSeries chartSeries = new ChartSeries();
 					chartSeries.setLabel(exporterBean.getStatisticsColumnTemplate().get(i));
 					seriesList.add(chartSeries);
-				}
+          propertiesCount++;
+        }
 			}
-			for (int i = 0; i < decList.size(); i++) {
-				if (Arrays.asList(descrStatData).contains(exporterBean.getStatisticsColumnTemplate().get(i))) {
+      for (int i = 0, propertiesCount = 0; i < decList.size(); i++) {
+        if (Arrays.asList(descrStatData).contains(exporterBean.getStatisticsColumnTemplate().get(i))) {
 					org.apache.commons.math3.stat.descriptive.DescriptiveStatistics deccriptor = decList.get(i);
 					double mean = ExporterBean.roundTo2Decimals(deccriptor.getMean());
-					properties.get(i).add(String.valueOf(mean));
-					double standardDeviation = ExporterBean.roundTo2Decimals(deccriptor.getStandardDeviation());
-					properties.get(i).add(String.valueOf(standardDeviation));
-					double geomMean = ExporterBean.roundTo2Decimals(deccriptor.getGeometricMean());
-					properties.get(i).add(String.valueOf(geomMean));
-					double kurtosis = ExporterBean.roundTo2Decimals(deccriptor.getKurtosis());
-					properties.get(i).add(String.valueOf(kurtosis));
-					double max = ExporterBean.roundTo2Decimals(deccriptor.getMax());
-					properties.get(i).add(String.valueOf(max));
-					double min = ExporterBean.roundTo2Decimals(deccriptor.getMin());
-					properties.get(i).add(String.valueOf(min));
-					double n = deccriptor.getN();
-					seriesList.get(i).set("N", n);
-					properties.get(i).add(String.valueOf(n));
-					double skewness = ExporterBean.roundTo2Decimals(deccriptor.getSkewness());
-					properties.get(i).add(String.valueOf(skewness));
-					double sumsq = ExporterBean.roundTo2Decimals(deccriptor.getSumsq());
-					properties.get(i).add(String.valueOf(sumsq));
-					double populationVariance = ExporterBean.roundTo2Decimals(deccriptor.getPopulationVariance());
-					properties.get(i).add(String.valueOf(populationVariance));
-					double variance = ExporterBean.roundTo2Decimals(deccriptor.getVariance());
-					properties.get(i).add(String.valueOf(variance));
-				}
+          properties.get(propertiesCount).add(String.valueOf(mean));
+          double standardDeviation = ExporterBean.roundTo2Decimals(deccriptor.getStandardDeviation());
+          properties.get(propertiesCount).add(String.valueOf(standardDeviation));
+          double geomMean = ExporterBean.roundTo2Decimals(deccriptor.getGeometricMean());
+          properties.get(propertiesCount).add(String.valueOf(geomMean));
+          double kurtosis = ExporterBean.roundTo2Decimals(deccriptor.getKurtosis());
+          properties.get(propertiesCount).add(String.valueOf(kurtosis));
+          double max = ExporterBean.roundTo2Decimals(deccriptor.getMax());
+          properties.get(propertiesCount).add(String.valueOf(max));
+          double min = ExporterBean.roundTo2Decimals(deccriptor.getMin());
+          properties.get(propertiesCount).add(String.valueOf(min));
+          double n = deccriptor.getN();
+          seriesList.get(propertiesCount).set("N", n);
+          properties.get(propertiesCount).add(String.valueOf(n));
+          double skewness = ExporterBean.roundTo2Decimals(deccriptor.getSkewness());
+          properties.get(propertiesCount).add(String.valueOf(skewness));
+          double sumsq = ExporterBean.roundTo2Decimals(deccriptor.getSumsq());
+          properties.get(propertiesCount).add(String.valueOf(sumsq));
+          double populationVariance = ExporterBean.roundTo2Decimals(deccriptor.getPopulationVariance());
+          properties.get(propertiesCount).add(String.valueOf(populationVariance));
+          double variance = ExporterBean.roundTo2Decimals(deccriptor.getVariance());
+          properties.get(propertiesCount).add(String.valueOf(variance));
+          propertiesCount++;
+        }
 			}
 
 			Map<Integer, List<String>> values = new HashMap<Integer, List<String>>();
