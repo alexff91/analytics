@@ -122,7 +122,8 @@ public class FrequencyDistribution implements Serializable {
 			exporterBean.nullifyAll();
 		} catch (Exception e) {
 			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null,
+      exporterBean.setBarModel(null);
+      FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", e.getMessage()));
 		}
 	}

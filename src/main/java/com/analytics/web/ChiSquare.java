@@ -103,8 +103,10 @@ public class ChiSquare implements Serializable {
 					+ "<table style = \"  display: table; border-collapse: collapse; border-spacing: none; border-color: gray;\">");
 			exporterBean.setContent(exporterBean.getContent() + "<tr><td style=\"border:1px solid black;\"></td>");
 
-			exporterBean.setContent(exporterBean.getContent() + "<th style=\"border:1px solid black;\" colspan = 4 >"
-					+ " The contingency table" + "</th>");
+      exporterBean.setContent(
+          exporterBean.getContent() + "<th style=\"border:1px solid black;\" colspan = " +
+              (xSet.size() + 2) + " >"
+              + " The contingency table" + "</th>");
 			exporterBean.setContent(exporterBean.getContent() + "</tr>");
 			exporterBean.setContent(exporterBean.getContent() + "<tr>");
 			exporterBean.setContent(exporterBean.getContent() + "<th style=\"border:1px solid black;\"></th>");
@@ -257,7 +259,8 @@ public class ChiSquare implements Serializable {
 							+ "\n" + "");
 		} catch (Exception e) {
 			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", e
+      exporterBean.setBarModel(null);
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", e
 					.getMessage() + " Preconditions:\n" + "\n" + "Expected counts must all be positive.\n"
 					+ "Observed counts must all be ≥ 0.\n"
 					+ "The observed and expected arrays must have the same length and their common length must be at least 2."));
