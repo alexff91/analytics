@@ -1,6 +1,7 @@
 package com.analytics.web;
 
 import org.apache.commons.math3.stat.Frequency;
+import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.ChartSeries;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -25,7 +26,12 @@ public class FrequencyDistribution implements Serializable {
 
 	public void frequencyDistributions(String[] freqDistribData) {
 		try {
-			exporterBean.setTableHeader("Frequency Distribution");
+      if (exporterBean.getBarModel() != null) {
+        exporterBean.getBarModel().getAxis(AxisType.Y)
+            .setLabel
+                ("Valid percentage");
+      }
+      exporterBean.setTableHeader("Frequency Distribution");
 			List<Frequency> decList = new LinkedList<Frequency>();
 			List<Integer> missedValues = new ArrayList<Integer>();
 			List<Integer> validValdues = new ArrayList<Integer>();

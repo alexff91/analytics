@@ -44,22 +44,20 @@ public class MultipleRegressionOLS implements Serializable {
       double[] x = new double[exporterBean.getStatisticsValues().size()];
       double[][] y = new double[exporterBean.getStatisticsValues().size()][independant.size()];
       int j = 1;
-      int z = 1;
       for (DataValue value : exporterBean.getStatisticsValues()) {
         String values = value.getValues(j, dependant);
         if (values != null) {
           x[j - 1] = Double.valueOf(values);
 
+          for (int i = 0; i < independant.size(); i++) {
+
+            String yValue = value.getValues(j, independant.get(i));
+            if (yValue != null) {
+              y[j - 1][i] = Double.valueOf(yValue);
+            }
+          }
           j++;
         }
-        for (int i = 0; i < independant.size(); i++) {
-
-          String yValue = value.getValues(z, independant.get(i));
-          if (yValue != null) {
-            y[z - 1][i] = Double.valueOf(yValue);
-          }
-        }
-        z++;
       }
       decList.get(0).newSampleData(x, y);
 

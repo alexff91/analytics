@@ -5,6 +5,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
 <ui:define name="content">
+
 <c:if test="#{loginController.loggedUser != null}">
 <h:head>
     <title>Data analysis</title>
@@ -12,11 +13,10 @@
 <h:body>
 <h:outputStylesheet name="css/default.css"/>
 <h:form enctype="multipart/form-data">
-<p:fieldset legend="Help" toggleable="true" collapsed="false" style="width:570px">
+<p:fieldset legend="Help" toggleable="true" collapsed="false" style="width:550px">
     <br>1. Import or open already imported file.</br>
-    <br>2. After uploading the file watch the imported data.</br>
-    <br>3. Select statistics method.</br>
-    <br>4. To share uploaded file open the "User files" menu.</br>
+    <br>2. Select statistics method.</br>
+    <br>3. Share uploaded file in "User files" menu.</br>
 </p:fieldset>
 <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true"/>
 <p:fileUpload update="@form tt dataValues" process="@this" ajax="true" auto="true"
@@ -86,8 +86,8 @@
         <h:outputLabel style="font-size:20px" for="freqDistribData" value="Columns to calculate:"/>
         <p:selectCheckboxMenu id="freqDistribData" value="#{bBean.freqDistribData}"
                               label="Variables"
-                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+                              filter="true" filterMatchMode="startsWith" panelStyle="width:350px">
+        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
 
         <p:commandButton style="font-size:20px" value="Run" icon="ui-icon-check"
@@ -104,8 +104,8 @@
     <h:panelGrid columns="4">
         <h:outputLabel style="font-size:20px" for="descrStatData" value="Columns to calculate:"/>
         <p:selectCheckboxMenu id="descrStatData" value="#{bBean.descrStatData}" label="Variables"
-                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+                              filter="true" filterMatchMode="startsWith" panelStyle="width:350px">
+        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
 
         <p:commandButton style="font-size:20px" value="Run" icon="ui-icon-check"
@@ -114,11 +114,11 @@
     </h:panelGrid>
 </p:dialog>
 
-<p:dialog global="true" header="Files list" widgetVar="filesList" modal="false" height="400"
+<p:dialog global="true" header="Files list" widgetVar="filesList" modal="false" height="300"
           minWidth="300"
           dynamic="true">
     <p:panelGrid columns="1">
-
+        <p:outputLabel value="Select file to open"/>
         <p:selectOneMenu id="newUserRole"
                          value="#{bBean.files}"
                          showCheckbox="true" style="width:250px;" var="t">
@@ -145,7 +145,7 @@
         <h:outputLabel style="font-size:20px" for="anovaData" value="Matrix:"/>
         <p:selectCheckboxMenu id="anovaData" value="#{bBean.testsData}" label="Classes"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
 
         <h:outputLabel style="font-size:20px" for="anovaAlpha" value="significance level :"/>
@@ -360,7 +360,7 @@
         <h:outputLabel style="font-size:20px" for="dataCov" value="Matrix:"/>
         <p:selectManyMenu id="dataCov" value="#{bBean.matrixDataCov}" label="Independant vars"
                           filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectManyMenu>
         <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
                          actionListener="#{bBean.covariance()}"
@@ -385,7 +385,7 @@
                               label="Independant vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep">
-        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
         <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
                          actionListener="#{bBean.multipleRegressionOls}"
@@ -466,7 +466,7 @@
                               label="Independant vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep description bar">
-        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
 
         <h:outputLabel style="font-size:20px" for="obsMenuGls" value="Observation var:"/>
@@ -474,7 +474,7 @@
                               label="Observation vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep">
-        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
         <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
                          actionListener="#{bBean.multipleRegressionGls}"
@@ -500,7 +500,7 @@
                               label="Independant vars"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:250px"
                               update="displayIndep displayDep description bar">
-        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
 
         <h:outputLabel style="font-size:20px" for="methodReg" value="Method:"/>
@@ -624,6 +624,15 @@
          rendered="#{bBean.barModel ne null}"/>
 <script type="text/javascript">
     function extLegend() {
+        this.cfg.seriesColors = [ "#4bb2c5", "#EAA228", "#c5b47f", "#579575", "#839557",
+            "#958c12", "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc", "#c747a3",
+            "#cddf54", "#FBD178", "#26B4E3", "#bd70c7",
+            "#4ab2c5", "#GAA228", "#cFb47f", "#5755H5", "#8395ff",
+            "#9f8c12", "#123579", "#4b5de4", "#d8b83f", "#ff5812", "#4485cc", "#f74ga3",
+            "#aadf54", "#fBf178", "#26BfE3", "#fd70c7", "#4b12c5", "#1AA228", "#f5b47f", "#279f75"
+            , "#8219f7",
+            "#121c12", "#55g5f9", "#fb53g4", "#g8b81f", "#1f5824", "#5085cc", "#c947a3",
+            "#cddf54"];
         this.cfg.legend = {
             show: true,
             location: 's',

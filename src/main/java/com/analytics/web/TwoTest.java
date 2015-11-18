@@ -49,12 +49,12 @@ public class TwoTest implements Serializable {
         String yvalues = value.getValues(rowInd, yIndexes);
         if (xvalues != null) {
           x[rowInd - 1] = Double.valueOf(xvalues);
-          rowInd++;
         }
         if (yvalues != null) {
-          y[rowIndY - 1] = Double.valueOf(yvalues).longValue();
-          rowIndY++;
+          y[rowInd - 1] = Double.valueOf(yvalues).longValue();
+
         }
+        rowInd++;
       }
 
       exporterBean.getDataValues().clear();
