@@ -1,0 +1,21 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+        >
+
+    <f:metadata>
+        <f:viewParam id="code" name="code" value="#{loginController.code}"/>
+        <f:viewParam id="error" name="error" value="#{loginController.error}"/>
+        <f:viewParam id="state" name="state" value="#{loginController.state}"/>
+        <f:event type="preRenderView" listener="#{loginController.phase2()}"/>
+    </f:metadata>
+    <ui:define name="content">
+        <h:form styleClass="loginPanelStyle">
+            <p:commandButton value="" action="#{loginController.redirect()}"
+                             title="Redirect to Google login"/>
+        </h:form>
+    </ui:define>
+</ui:composition>

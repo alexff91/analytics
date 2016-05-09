@@ -5,20 +5,27 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
         >
+    <f:metadata>
+        <f:viewParam id="code" name="code" value="#{loginController.code}"/>
+        <f:viewParam id="error" name="error" value="#{loginController.error}"/>
+        <f:viewParam id="state" name="state" value="#{loginController.state}"/>
+        <f:event type="preRenderView" listener="#{loginController.phase2()}"/>
+    </f:metadata>
     <ui:define name="content">
-        <h:form styleClass="loginPanelStyle">
-            <p:growl id="msgs" showDetail="true" sticky="false"/>
-            <p:panelGrid columns="2">
-                <f:facet name="header">
-                    Login Panel
-                </f:facet>
-                <h:outputText value="Username : "></h:outputText>
-                <p:inputText id="username" value="#{loginController.username}" required="true"
+        <h:form>
+            <h:panelGrid style="  margin: auto;">
+                <p:growl id="msgs" showDetail="true" sticky="false"/>
+                <h:panelGrid columns="2">
+                    <f:facet name="header">
+                        <p:outputLabel value="Login to Statscholars"/>
+                    </f:facet>
+                    <p:outputLabel value="Username : "></p:outputLabel>
+                    <p:inputText id="username" value="#{loginController.username}"
                              requiredMessage="Please Enter Username!" message="fc">
                     <f:validateLength minimum="1"/>
                 </p:inputText>
-                <h:outputText value="Password : "></h:outputText>
-                <p:password id="password" value="#{loginController.password}" required="true"
+                    <p:outputLabel value="Password : "></p:outputLabel>
+                    <p:password id="password" value="#{loginController.password}"
                             requiredMessage="Please Enter password!">
                     <f:validateLength minimum="1"/>
                 </p:password>
@@ -27,7 +34,18 @@
                                      actionListener="#{loginController.login}" type="submit"
                                      icon="ui-icon-check" style="margin:0"></p:commandButton>
                 </f:facet>
-            </p:panelGrid>
+
+                </h:panelGrid>
+                <h:panelGrid columns="1">
+                    <h:outputText value="or" style="  margin: auto;"></h:outputText>
+                    <p:commandLink action="#{loginController.redirect()}" style="  margin: auto;"
+                                   title="Redirect to Google login">
+                        <p:graphicImage
+                                value="/resources/images/btn_google_signin_light_normal_web@2x.png"/>
+                    </p:commandLink>
+
+                </h:panelGrid>
+            </h:panelGrid>
         </h:form>
     </ui:define>
 </ui:composition>

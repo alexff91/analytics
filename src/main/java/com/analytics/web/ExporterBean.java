@@ -736,6 +736,7 @@ public class ExporterBean implements Serializable {
         facesContext
             .addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error reading file" + e, null));
+        e.printStackTrace();
       }
 
       Iterator<Row> rowIterator = reader.iterator();
@@ -773,7 +774,7 @@ public class ExporterBean implements Serializable {
           if (cells.size() > 0) {
             Map<Integer, List<String>> values = new HashMap<Integer, List<String>>();
             LinkedList<String> rowValues = new LinkedList<String>();
-            for (int j = 0; j < columnTemplate.size(); j++) {
+            for (int j = 0; j < columnTemplate.size() && j < cells.size(); j++) {
               rowValues.add(cells.get(j));
             }
             values.put(i, rowValues);

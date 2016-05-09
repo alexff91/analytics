@@ -13,29 +13,12 @@
     <h:form>
         <p:growl id="messages"/>
         <p:menu style="width:95%">
-            <c:if test="#{loginController.userAdmin}">
-                <p:menuitem value="Home" action="/admin/AdminHome.xhtml?faces-redirect=true"
-                            ajax="false" icon="ui-icon-home"/>
-                <p:menuitem value="Users" action="/admin/UserList.xhtml?faces-redirect=true"
-                            ajax="false" icon="ui-icon-person"/>
-            </c:if>
-            <c:if test="#{loginController.loggedUser != null}">
-                <p:menuitem value="Logout" action="#{loginController.logout}" icon="ui-icon-power"/>
-            </c:if>
-            <c:if test="#{loginController.loggedUser != null}">
-                <p:menuitem value="Statscholar" action="/index.xhtml?faces-redirect=true"
-                            icon="ui-icon-lightbulb"/>
-            </c:if>
-            <c:if test="#{loginController.loggedUser != null}">
-                <p:menuitem value="Share Files"
-                            action="/admin/UserFiles.xhtml?faces-redirect=true"
-                            icon="ui-icon-signal-diag"/>
-            </c:if>
-            <c:if test="#{loginController.loggedUser == null}">
-                <p:menuitem value="Login" action="/Login.xhtml?faces-redirect=true"
-                            icon="ui-icon-power"/>
-            </c:if>
+
         </p:menu>
     </h:form>
 </h:body>
 </html>
+
+        <!--<p:menuitem value="Login with Google"-->
+        <!--action="/GoogleLogin.xhtml?faces-redirect=true"-->
+        <!--icon="ui-icon-power"/>-->

@@ -4,33 +4,14 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
-<ui:define name="content">
+<ui:define name="analytics">
 
-<c:if test="#{loginController.loggedUser != null}">
-<h:head>
-    <title>Data analysis</title>
-</h:head>
-<h:body>
-<h:outputStylesheet name="css/default.css"/>
-<h:form enctype="multipart/form-data">
-<p:fieldset legend="Help" toggleable="true" collapsed="false" style="width:550px">
-    <br>1. Import or open already imported file.</br>
-    <br>2. Select statistics method.</br>
-    <br>3. Share uploaded file in "User files" menu.</br>
-</p:fieldset>
-<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true"/>
-<p:fileUpload update="@form tt dataValues" process="@this" ajax="true" auto="true"
-              style="width:600px"
-              fileUploadListener="#{bBean.handleFileUpload}" mode="advanced"
-        />
-
-<p:growl autoUpdate="true"/>
-
-<p:panelMenu style="width:600px">
-    <p:submenu label="Stored files">
-        <p:menuitem value="Open file" onclick="PF('filesList').show();"
+    <p:menuitem value="Stored files" onclick="PF('filesList').show();"
                     ajax="true"/>
-    </p:submenu>
+
+    <p:menuitem value="Share Files"
+                action="/admin/UserFiles.xhtml?faces-redirect=true"
+                icon="ui-icon-signal-diag"/>
     <p:submenu label="Statistics">
         <p:menuitem value="Descriptive statistics" onclick="PF('descrStat').show();"
                     ajax="true"/>
@@ -39,11 +20,14 @@
         <p:menuitem value="Simple Regression" onclick="PF('dlgSimple').show();" ajax="true"/>
 
         <p:submenu label="Multiple Regression">
-            <p:menuitem value="OLS Multiple Linear Regression" onclick="PF('osldlg').show();"
+            <p:menuitem value="OLS Multiple Linear Regr." style="width:350px"
+                        onclick="PF('osldlg').show();"
                         ajax="true"/>
-            <p:menuitem value="GLS Multiple Linear Regression" onclick="PF('glsdlg').show();"
+            <p:menuitem value="GLS Multiple Linear Regr." style="width:350px"
+                        onclick="PF('glsdlg').show();"
                         ajax="true"/>
-            <p:menuitem value="Multiple Linear Regression" onclick="PF('multyRegDlg').show();"
+            <p:menuitem value="Multiple Linear Regression"
+                        style="width:350px" onclick="PF('multyRegDlg').show();"
                         ajax="true"/>
 
         </p:submenu>
@@ -51,11 +35,11 @@
 
         <p:submenu label="Covariance and correlation">
             <p:menuitem
-                    value="Covariance and correlation of 2 vars"
+                    value="For 2 variables"
                     style="white-space:pre-line;width:500px;font-size:24px "
                     onclick="PF('covdlg').show();" ajax="true"/>
             <p:menuitem
-                    value="Covariance and correlation of matrix"
+                    value="For matrix"
                     style="white-space:pre-line;width:500px;font-size:24px   "
                     onclick="PF('covMatrixdlg').show();"
                     ajax="true"/>
@@ -73,11 +57,38 @@
         <p:menuitem value="Add variable" onclick="PF('addVar').show();" ajax="true"/>
         <p:menuitem value="Original data" actionListener="#{bBean.original}" ajax="false"/>
         <p:menuitem value="Map variables" onclick="PF('mapVar').show();" ajax="true"/>
-
+        <p:submenu label="Help">
+            <p:menuitem value="Show info" onclick="PF('helpDialog').show();" ajax="true"/>
+        </p:submenu>
+        <p:menuitem value="Upload file" onclick="PF('uploadFile').show();" ajax="true"/>
     </p:submenu>
+</ui:define>
 
-</p:panelMenu>
+<ui:define name="content">
 
+
+<h:head>
+    <title>Data analysis</title>
+</h:head>
+<h:body>
+<h:outputStylesheet name="css/default.css"/>
+<h:form enctype="multipart/form-data">
+
+<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true"/>
+
+
+<p:growl autoUpdate="true"/>
+
+
+<p:dialog global="true" header="Help" widgetVar="helpDialog" modal="false"
+          minHeight="500"
+          dynamic="true">
+    <h:panelGrid columns="1">
+        <br>1. Import or open already imported file.</br>
+        <br>2. Select statistics method.</br>
+        <br>3. Share uploaded file in "User files" menu.</br>
+    </h:panelGrid>
+</p:dialog>
 <p:dialog global="true" header="Frequency distribution" widgetVar="freqDistrib" modal="false"
           minHeight="300"
           dynamic="true">
@@ -87,7 +98,7 @@
         <p:selectCheckboxMenu id="freqDistribData" value="#{bBean.freqDistribData}"
                               label="Variables"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:350px">
-        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
 
         <p:commandButton style="font-size:20px" value="Run" icon="ui-icon-check"
@@ -105,13 +116,22 @@
         <h:outputLabel style="font-size:20px" for="descrStatData" value="Columns to calculate:"/>
         <p:selectCheckboxMenu id="descrStatData" value="#{bBean.descrStatData}" label="Variables"
                               filter="true" filterMatchMode="startsWith" panelStyle="width:350px">
-        <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
+            <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectCheckboxMenu>
 
         <p:commandButton style="font-size:20px" value="Run" icon="ui-icon-check"
                          actionListener="#{bBean.descriptiveStatistics}"
                          onclick="PF('descrStat').hide();" update="dataValues description"/>
     </h:panelGrid>
+</p:dialog>
+
+<p:dialog global="true" header="Files list" widgetVar="uploadFile" modal="false" height="200"
+          minWidth="400"
+          dynamic="true">
+    <p:fileUpload update="@form tt dataValues" process="@this" ajax="true" auto="true"
+                  style="width:600px"
+                  fileUploadListener="#{bBean.handleFileUpload}" mode="advanced"
+            />
 </p:dialog>
 
 <p:dialog global="true" header="Files list" widgetVar="filesList" modal="false" height="300"
@@ -305,9 +325,9 @@
             <f:selectItems value="#{bBean.statisticsColumnTemplate}"/>
         </p:selectOneMenu>
 
-        <h:outputLabel style="font-size:20px" for="keyName" value="Name of variable:"/>
+        <h:outputLabel style="font-size:20px" for="keyName" value="Original value:"/>
         <p:inputText style="font-size:20px" id="keyName" value="#{bBean.keyMapped}"/>
-        <h:outputLabel style="font-size:20px" for="valueName" value="Value of var:"/>
+        <h:outputLabel style="font-size:20px" for="valueName" value="New value:"/>
         <p:inputText style="font-size:20px" id="valueName" value="#{bBean.valueMapped}"/>
         <p:commandButton style="font-size:20px" value="Submit" icon="ui-icon-check"
                          actionListener="#{bBean.mapVariables()}"
@@ -549,21 +569,24 @@
           minWidth="300"
           dynamic="true">
     <p:growl id="growl"/>
-    <p:scrollPanel> <p:dataList var="myListItem" value="#{bBean.statisticsColumnTemplate}">
-        <p:inputText style="font-size:20px" value="#{myListItem}"/>
-    </p:dataList></p:scrollPanel>
+    <p:scrollPanel>
+        <p:dataList var="myListItem" value="#{bBean.statisticsColumnTemplate}">
+            <p:inputText style="font-size:20px" value="#{myListItem}"/>
+        </p:dataList>
+    </p:scrollPanel>
 
     <p:commandButton style="font-size:20px" value="Submit" onclick="PF('colTemp').hide();"
                      update="@form dataValues growl description"/>
 </p:dialog>
-<!--allowTypes="/(\.|\/)(xlsx)$/"-->
+<c:if test="#{loginController.loggedUser != null}">
+    <!--allowTypes="/(\.|\/)(xlsx)$/"-->
 <p:growl id="tt" showDetail="true"/>
 
 <p:remoteCommand name="onCellEdit" update="@form"/>
 <p:dataTable id="dataValues" rowIndexVar="rowId" var="dataVal" value="#{bBean.dataValues}"
              widgetVar="dataValuesTable" style="width: 100%;"
              editable="true" editMode="cell"
-             scrollHeight="500px" resizableColumns="true" liveResize="false" scrollWidth="100%"
+             scrollHeight="500px" resizableColumns="true" liveResize="false"
              scrollable="true"
              ajax="true" paginator="true" rows="20" styleClass="fixed-size"
              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
@@ -597,32 +620,42 @@
         </f:facet>
 
         <p:cellEditor>
-            <f:facet name="output"><h:outputText
-                    value="#{dataVal.getRowValues()[column.index]}"/></f:facet>
-            <f:facet name="input"><p:inputText value="#{dataVal.getRowValues()[column.index]}"
-                                               style="width:96%"/></f:facet>
+            <f:facet name="output">
+                <h:outputText
+                        value="#{dataVal.getRowValues()[column.index]}"/>
+            </f:facet>
+            <f:facet name="input">
+                <p:inputText value="#{dataVal.getRowValues()[column.index]}"
+                             style="width:96%"/>
+            </f:facet>
 
         </p:cellEditor>
+        <f:facet name="footer">
+            <h:outputText value="#{column.header}"/>
+        </f:facet>
     </p:columns>
 
 </p:dataTable>
+    <p:panel rendered="#{bBean.mapOfValues.size() gt 0}">
+        <h2>Mapped Variables</h2>
 
-<h2>Mapped Variables</h2>
+        <p:dataList id="dataMaps" value="#{bBean.mapOfValues}" var="productEntry">
 
-<p:dataList id="dataMaps" value="#{bBean.mapOfValues}" var="productEntry">
-
-    <h:outputText value="#{productEntry}"/>
+            <h:outputText value="#{productEntry}"/>
 
 
-</p:dataList>
-
-<h2>Description</h2>
-<h:outputText id="description" escape="false" value="#{bBean.description}"></h:outputText>
-
-<h2>Chart</h2>
-<p:chart type="bar" model="#{bBean.barModel}" style="height:500px"
-         rendered="#{bBean.barModel ne null}"/>
-<script type="text/javascript">
+        </p:dataList>
+    </p:panel>
+    <p:panel rendered="#{bBean.description ne null}">
+        <h2>Description</h2>
+        <h:outputText id="description" escape="false" value="#{bBean.description}"></h:outputText>
+    </p:panel>
+    <p:panel rendered="#{bBean.barModel ne null}">
+        <h2>Chart</h2>
+        <p:chart type="bar" model="#{bBean.barModel}" style="height:500px"
+                 rendered="#{bBean.barModel ne null}"/>
+    </p:panel>
+    <script type="text/javascript">
     function extLegend() {
         this.cfg.seriesColors = [ "#4bb2c5", "#EAA228", "#c5b47f", "#579575", "#839557",
             "#958c12", "#953579", "#4b5de4", "#d8b83f", "#ff5800", "#0085cc", "#c747a3",
@@ -640,6 +673,8 @@
         };
 
     }
+
+
 </script>
 <h2>Output Statistics</h2>
 <h:outputText id="warningDose" escape="false" styleClass="redText"
@@ -662,10 +697,10 @@
     <p:graphicImage value="/resources/images/xml.png"/>
     <p:dataExporter type="xml" target="dataValues" fileName="statistics" pageOnly="true"/>
 </h:commandLink>
-
+</c:if>
 </h:form>
 
 </h:body>
-</c:if>
+
 </ui:define>
 </ui:composition>

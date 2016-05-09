@@ -6,7 +6,17 @@ import com.nz.simplecrud.service.RoleService;
 import com.nz.simplecrud.service.UserService;
 import com.nz.simplecrud.util.DateUtility;
 import com.nz.simplecrud.util.SHAConverter;
+import org.apache.commons.httpclient.HttpURL;
+import org.scribe.builder.ServiceBuilder;
+import org.scribe.builder.api.GoogleApi;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
+import org.scribe.model.Verifier;
+import org.scribe.oauth.OAuthService;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.Principal;
@@ -19,6 +29,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -34,9 +48,18 @@ public class LoginController implements Serializable {
   @Inject
   private transient Logger logger;
 
+  @Inject
+  private UserController userController;
+
   private String username;
 
   private String password;
+
+  private String code;
+
+  private String state;
+
+  private String error;
 
   public UserTable getLoggedUser() {
     return loggedUser;
@@ -102,12 +125,97 @@ public class LoginController implements Serializable {
     this.password = password;
   }
 
+  public String phase2() {
+    if (error != null) {
+      logger.info("error=" + error);
+      try {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("error.jsf");
+      } catch (Exception e) {
+        logger.log(Level.SEVERE, "phase2() Error: redirect failed!", e);
+      }
+      return "";
+    }
+    if (code != null) {
+      HttpSession sess = (HttpSession) FacesContext.getCurrentInstance()
+          .getExternalContext()
+          .getSession(true);
+      ServiceBuilder builder = new ServiceBuilder();
+      OAuthService service = builder.provider(Google2Api.class)
+          .apiKey(GOOGLE_CLIENT_ID)
+          .callback("http://statscholars.com:28080/analytics_war/GoogleLogin.xhtml")
+          .apiSecret("RdqxeyEtXd6WqJxnAP-I5T7g").scope("openid profile email")
+          .build(); //Now build the call
+      //Get the all important authorization code
+      //Construct the access token
+      Token token = service.getAccessToken(null, new Verifier(code));
+      code = null;
+      //Save the token for the duration of the session
+      sess.setAttribute("token", token);
+
+      //Now do something with it - get the user's G+ profile
+      OAuthRequest oReq = new OAuthRequest(Verb.GET,
+          "https://www.googleapis.com/oauth2/v2/userinfo");
+      service.signRequest(token, oReq);
+      Response oResp = oReq.send();
+
+      //Read the result
+      JsonReader reader = Json.createReader(new ByteArrayInputStream(
+          oResp.getBody().getBytes()));
+      JsonObject profile = reader.readObject();
+      //Save the user details somewhere or associate it with
+      String email = profile.getString("email");
+      String userName = profile.getString("email");
+      String firstName = profile.getString("given_name");
+      String lastname = profile.getString("family_name");
+      UserTable googleUser = new UserTable();
+      googleUser.setEmail(email);
+      googleUser.setUsername(userName);
+      googleUser.setFirstname(firstName);
+      googleUser.setLastname(lastname);
+      SHAConverter shaConverter = new SHAConverter();
+      Object pass = shaConverter.getAsObject(FacesContext.getCurrentInstance(), null,
+          GOOGLE_CLIENT_ID + userName + email);
+      googleUser.setPassword(pass.toString());
+      List<UserTable> dsd = das.findByNativeQuery("select * from SIMPLECRUD_DB" +
+          ".USERTABLE");
+      final Boolean[] isGoogleUserFound = {false};
+      for (UserTable userTable : dsd) {
+        if (userTable != null && userTable.getUsername() != null && userTable.getUsername().equals
+            (userName)) {
+          isGoogleUserFound[0] = true;
+        }
+      }
+      this.password = GOOGLE_CLIENT_ID + userName + email;
+      this.username = userName;
+      if (isGoogleUserFound[0]) {
+        login();
+      } else {
+        userController.setNewUserTable(googleUser);
+        userController.doCreateUser();
+        userController.updateUserList();
+        login();
+      }
+    } return null;
+  }
+
+  public void redirect() {
+    String plainUrl = "https://accounts.google.com/o/oauth2/v2/auth?"
+        + "scope=email%20profile&"
+        + "redirect_uri=http://statscholars.com:28080/analytics_war/GoogleLogin.xhtml&"
+        + "response_type=code&"
+        + "client_id=" + GOOGLE_CLIENT_ID;
+    try {
+      FacesContext.getCurrentInstance().getExternalContext().redirect(plainUrl);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   /**
    * Listen for button clicks on the #{loginController.login} action, validates the username and
    * password entered by the user and navigates to the appropriate page.
-   * @param actionEvent
    */
-  public void login(ActionEvent actionEvent) {
+  public void login() {
 
     FacesContext context = FacesContext.getCurrentInstance();
     HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
@@ -119,7 +227,8 @@ public class LoginController implements Serializable {
 
       List<UserTable> dsd = das.findByNativeQuery("select * from SIMPLECRUD_DB" +
           ".USERTABLE" +
-          " where SIMPLECRUD_DB.USERTABLE.PASSWORD = '" + pass.toString() + "'");
+          " where SIMPLECRUD_DB.USERTABLE.PASSWORD = '" + pass.toString() + "' AND SIMPLECRUD_DB" +
+          ".USERTABLE.USERNAME = '" + getUsername() + "'");
       loggedUser = dsd.get(0);
       //      List<Role> roles = dasRole.findByNativeQuery("select * from SIMPLECRUD_DB" +
       //          ".ROLE where SIMPLECRUD_DB.ROLE.ID in (select SIMPLECRUD_DB.USER_ROLES.ROLE_ROLEID from" +
@@ -128,6 +237,7 @@ public class LoginController implements Serializable {
       //      request.login(username, password);
       // gets the user principle and navigates to the appropriate page
       //      Principal principal = request.getUserPrincipal();
+      navigateString[0] = "/user/UserHome.xhtml";
       for (Role role : dsd.get(0).getRoles()) {
         if (role.getRoledesc().equals("Administrator")) {
           isUserAdmin = true;
@@ -136,6 +246,9 @@ public class LoginController implements Serializable {
           //          isUserAdmin=false;
           //          navigateString[0] = "/manager/ManagerHome.xhtml";
         } else if (role.getRoledesc().equals("User")) {
+          isUserAdmin = false;
+          navigateString[0] = "/user/UserHome.xhtml";
+        } else {
           isUserAdmin = false;
           navigateString[0] = "/user/UserHome.xhtml";
         }
@@ -177,4 +290,31 @@ public class LoginController implements Serializable {
         .handleNavigation(FacesContext.getCurrentInstance(), null,
             "/Login.xhtml?faces-redirect=true");
   }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(final String code) {
+    this.code = code;
+  }
+
+  public String getState() {
+    return state;
+  }
+
+  public void setState(final String state) {
+    this.state = state;
+  }
+
+  public String getError() {
+    return error;
+  }
+
+  public void setError(final String error) {
+    this.error = error;
+  }
+
+  private static final String GOOGLE_CLIENT_ID
+      = "67413742665-uj4981bhb10ksne63eotc8vn85dscoq2.apps.googleusercontent.com";
 }

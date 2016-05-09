@@ -83,12 +83,14 @@ public class UserController implements Serializable {
     lazyModel.setWrappedData(dsd);
     roleList = dasRole.findByNativeQuery("select * from SIMPLECRUD_DB" +
         ".ROLE");
-
-    fileList = fileService.findByNativeQuery("select * from SIMPLECRUD_DB" +
-        ".FILE WHERE SIMPLECRUD_DB.FILE.ID in ( select SIMPLECRUD_DB.USER_FILES.FILE_FILEID " +
-        "from SIMPLECRUD_DB.USER_FILES " +
-        "where SIMPLECRUD_DB.USER_FILES.USER_USERID =  " + loginController.getLoggedUser().getId() +
-        " )");
+    if (loginController.getLoggedUser() != null) {
+      fileList = fileService.findByNativeQuery("select * from SIMPLECRUD_DB" +
+          ".FILE WHERE SIMPLECRUD_DB.FILE.ID in ( select SIMPLECRUD_DB.USER_FILES.FILE_FILEID " +
+          "from SIMPLECRUD_DB.USER_FILES " +
+          "where SIMPLECRUD_DB.USER_FILES.USER_USERID =  " + loginController.getLoggedUser().getId()
+          +
+          " )");
+    }
     //        roleList = das.findWithNamedQuery(Role.ALL);
   }
 

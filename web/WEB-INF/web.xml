@@ -24,9 +24,12 @@
     </filter-mapping>
     <context-param>
         <param-name>primefaces.THEME</param-name>
-        <param-value>aristo</param-value>
+        <param-value>bootstrap</param-value>
     </context-param>
-
+    <context-param>
+        <param-name>com.sun.faces.enableRestoreView11Compatibility</param-name>
+        <param-value>true</param-value>
+    </context-param>
     <display-name>com.nz</display-name>
     <!--<filter>-->
     <!--<filter-name>LoginPageFilter</filter-name>-->
