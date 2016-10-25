@@ -6,12 +6,7 @@
                 xmlns:p="http://primefaces.org/ui">
 <ui:define name="analytics">
 
-    <p:menuitem value="Stored files" onclick="PF('filesList').show();"
-                    ajax="true"/>
 
-    <p:menuitem value="Share Files"
-                action="/admin/UserFiles.xhtml?faces-redirect=true"
-                icon="ui-icon-signal-diag"/>
     <p:submenu label="Statistics">
         <p:menuitem value="Descriptive statistics" onclick="PF('descrStat').show();"
                     ajax="true"/>
@@ -54,14 +49,24 @@
                         ajax="true"/>
         </p:submenu>
 
-        <p:menuitem value="Add variable" onclick="PF('addVar').show();" ajax="true"/>
+
+    </p:submenu>
+    <p:submenu label="Transformations">
+    <p:menuitem value="Add variable" onclick="PF('addVar').show();" ajax="true"/>
         <p:menuitem value="Original data" actionListener="#{bBean.original}" ajax="false"/>
         <p:menuitem value="Map variables" onclick="PF('mapVar').show();" ajax="true"/>
-        <p:submenu label="Help">
-            <p:menuitem value="Show info" onclick="PF('helpDialog').show();" ajax="true"/>
-        </p:submenu>
-        <p:menuitem value="Upload file" onclick="PF('uploadFile').show();" ajax="true"/>
     </p:submenu>
+    <p:submenu label="Files">
+        <p:menuitem value="Upload file" onclick="PF('uploadFile').show();" ajax="true"/>
+        <p:menuitem value="Stored files" onclick="PF('filesList').show();"
+                    ajax="true"/>
+
+        <p:menuitem value="Share Files"
+                    action="/admin/UserFiles.xhtml?faces-redirect=true"
+                    icon="ui-icon-signal-diag"/>
+    </p:submenu>
+
+
 </ui:define>
 
 <ui:define name="content">

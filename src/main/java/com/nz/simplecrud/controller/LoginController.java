@@ -142,7 +142,7 @@ public class LoginController implements Serializable {
       ServiceBuilder builder = new ServiceBuilder();
       OAuthService service = builder.provider(Google2Api.class)
           .apiKey(GOOGLE_CLIENT_ID)
-          .callback("http://statscholars.com:28080/analytics_war/GoogleLogin.xhtml")
+          .callback("http://localhost:8080//analytics_war/GoogleLogin.xhtml")
           .apiSecret("RdqxeyEtXd6WqJxnAP-I5T7g").scope("openid profile email")
           .build(); //Now build the call
       //Get the all important authorization code
@@ -201,7 +201,7 @@ public class LoginController implements Serializable {
   public void redirect() {
     String plainUrl = "https://accounts.google.com/o/oauth2/v2/auth?"
         + "scope=email%20profile&"
-        + "redirect_uri=http://statscholars.com:28080/analytics_war/GoogleLogin.xhtml&"
+        + "redirect_uri=http://localhost:8080/analytics_war/GoogleLogin.xhtml&"
         + "response_type=code&"
         + "client_id=" + GOOGLE_CLIENT_ID;
     try {
