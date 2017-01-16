@@ -336,6 +336,72 @@ public class ExporterBean implements Serializable {
     }
   }
 
+  public static boolean isNumeric(String str) {
+    return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+  }
+
+  public void automaticallyMapVariables() {
+    try {
+
+      int dependant = 0;
+
+      for (int i = 0; i < columnTemplate.size(); i++) {
+        dependant = i;
+
+        String[] x = new String[statisticsValues.size()];
+        int rowInd = 1;
+        HashMap<String, String> oldNewMapping = new HashMap<>();
+        for (DataValue value : statisticsValues) {
+          String xvalues = value.getValues(rowInd, dependant);
+          if (xvalues != null) {
+            if (!isNumeric(xvalues)) {
+              String changedKey = x[rowInd - 1];
+              if (oldNewMapping.containsKey(changedKey)) {
+                x[rowInd - 1] = oldNewMapping.get(changedKey);
+              } else {
+                oldNewMapping.put(changedKey, String.valueOf(oldNewMapping.size() + 1));
+                x[rowInd - 1] = String.valueOf(rowInd);
+              }
+
+              mapOfValues
+                  .add(
+                      "Column:" + columnTemplate.get(dependant) + ", key:" + changedKey + ", value:"
+                          + x[rowInd - 1]);
+              if (mapOfColumns.get(dependant) == null) {
+                HashMap<String, String> valueMap = new HashMap<>();
+                valueMap.put(x[rowInd - 1], changedKey);
+                mapOfColumns.put(dependant, valueMap);
+              } else {
+                mapOfColumns.get(dependant).put(x[rowInd - 1], changedKey);
+              }
+            } else {
+              x[rowInd - 1] = xvalues;
+            }
+
+            rowInd++;
+          }
+        }
+        tableHeader = "Data values";
+        dataValues.clear();
+        columns.clear();
+        columnTemplate.clear();
+
+        for (int c = 0; c < statisticsValues.size(); c++) {
+          statisticsValues.get(c).setValues(c + 1, dependant, x[c]);
+        }
+
+        dataValues = new ArrayList<>(statisticsValues);
+        columnTemplate = new ArrayList<>(statisticsColumnTemplate);
+        createDynamicColumns();
+        nullifyAll();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      FacesContext.getCurrentInstance().addMessage(null,
+          new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", e.getMessage()));
+    }
+  }
+
   public List<DataValue> getStatisticsValues() {
     return statisticsValues;
   }

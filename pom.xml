@@ -12,10 +12,10 @@
     <repositories>
         <repository>
             <id>prime-repo</id>
-            <name>Prime Repo</name>
+            <name>PrimeFaces Maven Repository</name>
             <url>http://repository.primefaces.org</url>
+            <layout>default</layout>
         </repository>
-
 
         <repository>
             <url>http://download.eclipse.org/rt/eclipselink/maven.repo/</url>
@@ -190,8 +190,8 @@
         </dependency>
         <dependency>
             <groupId>org.primefaces.themes</groupId>
-            <artifactId>${primefaces-themes-artifact}</artifactId>
-            <version>${primefaces-themes-version}</version>
+            <artifactId>bootstrap</artifactId>
+            <version>1.0.10</version>
         </dependency>
         <dependency>
             <groupId>javax.faces</groupId>

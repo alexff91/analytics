@@ -54,6 +54,8 @@
     <p:submenu label="Transformations">
     <p:menuitem value="Add variable" onclick="PF('addVar').show();" ajax="true"/>
         <p:menuitem value="Original data" actionListener="#{bBean.original}" ajax="false"/>
+        <p:menuitem value="Map all variables" actionListener="#{bBean.automaticallyMapVariables}"
+                    ajax="false"/>
         <p:menuitem value="Map variables" onclick="PF('mapVar').show();" ajax="true"/>
     </p:submenu>
     <p:submenu label="Files">
