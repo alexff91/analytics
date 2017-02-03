@@ -109,8 +109,8 @@ public class FrequencyDistribution implements Serializable {
 			}
 			exporterBean.setDescription("" + "<br><li> Sum. freq. - the  sum of all frequencies."
 					+ "<br><li> Unique count -  the number of unique values that have been added to the frequency table."
-					+ "<br><li> Valid pct. - the percentage of valide values to the total count."
-					+ "<br><li> Missed pct. - the percentage of missed values to the total count."
+          + "<br><li> Valid pct. - the percentage of valid values to the total count."
+          + "<br><li> Missed pct. - the percentage of missed values to the total count."
 					+ "<br><li> Freq. count - the number of values equal to value."
 					+ "<br><li> Cum. freq. - the cumulative frequency of values less than or equal to v."
 					+ "<br><li> Cum. pct. - the cumulative percentage of values less than or equal to value."

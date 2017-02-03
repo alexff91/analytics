@@ -195,13 +195,39 @@ public class ChiSquare implements Serializable {
 				exporterBean.setContent(exporterBean.getContent() + "</tr>");
 				exporterBean.setContent(exporterBean.getContent() + "<tr>");
 				for (int j = 0; j < crosstab.table[i].length; j++) {
-					exporterBean.setContent(
-							exporterBean.getContent() + "<td style=\"border:1px solid black;\">" + "Std.Residual "
-									+ ExporterBean.roundTo2Decimals(
-											(crosstab.table[i][j] - rowcount / crosstab.table[i].length)
-													/ (Math.sqrt(rowcount / crosstab.table.length)))
-									+ "</td>");
-				}
+
+          double stdResidual = ExporterBean.roundTo2Decimals(
+              (crosstab.table[i][j] - rowcount / crosstab.table[i].length)
+                  / (Math.sqrt(rowcount / crosstab.table.length)));
+          double residualMinusMean = stdResidual - rowcount / crosstab.table[i].length;
+          String residualDifferenceColorStyle = "background:grey;";
+          if (residualMinusMean >= 0) {
+            residualDifferenceColorStyle = "background: rgba(202, 132, 134, 0.51);";
+          }
+          if (residualMinusMean < 0) {
+            residualDifferenceColorStyle = "background: rgba(153, 202, 117, 0.51);";
+          }
+          if (residualMinusMean <= -1) {
+            residualDifferenceColorStyle = "background: rgba(153, 202, 117, 0.51);";
+          }
+          if (residualMinusMean <= -2) {
+            residualDifferenceColorStyle = "background: rgba(33, 202, 31, 0.51);";
+          }
+
+          if (residualMinusMean >= 1) {
+            residualDifferenceColorStyle = "rgba(202, 77, 57, 0.51);";
+          }
+          if (residualMinusMean >= 2) {
+            residualDifferenceColorStyle = "rgba(202, 24, 0, 0.65);";
+          }
+
+          exporterBean.setContent(
+              exporterBean.getContent() + "<td style=\"border:1px solid black;"
+                  + residualDifferenceColorStyle + "\">" + "Std" +
+                  ".Residual "
+                  + stdResidual
+                  + "</td>");
+        }
 				exporterBean.setContent(exporterBean.getContent() + "</tr>");
 			}
 			if (x.length == y.length) {

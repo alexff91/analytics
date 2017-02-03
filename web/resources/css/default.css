@@ -16,6 +16,56 @@
     font-weight: bold;
 }
 
+.table-head {
+    background: #ebe9f9; /* Old browsers */
+    background: #7373ea; /* FF3.6+ */
+    resize: horizontal;
+    font-size: 120%;
+    font-weight: bold;
+}
+
+.table-red-high-cell {
+    background: rgba(202, 24, 0, 0.65); /* FF3.6+ */
+    resize: horizontal;
+    font-size: 120%;
+    font-weight: bold;
+}
+
+.table-red-medium-cell {
+    background: rgba(202, 77, 57, 0.51); /* FF3.6+ */
+    resize: horizontal;
+    font-size: 120%;
+    font-weight: bold;
+}
+
+.table-red-low-cell {
+    background: rgba(202, 132, 134, 0.51); /* FF3.6+ */
+    resize: horizontal;
+    font-size: 120%;
+    font-weight: bold;
+}
+
+.table-green-cell {
+    background: rgba(33, 202, 31, 0.51); /* FF3.6+ */
+    resize: horizontal;
+    font-size: 120%;
+    font-weight: bold;
+}
+
+.table-medium-green-cell {
+    background: rgba(153, 202, 117, 0.51); /* FF3.6+ */
+    resize: horizontal;
+    font-size: 120%;
+    font-weight: bold;
+}
+
+.table-low-green-cell {
+    background: rgba(153, 202, 117, 0.51); /* FF3.6+ */
+    resize: horizontal;
+    font-size: 120%;
+    font-weight: bold;
+}
+
 .ui-datatable tbody td {
     border-color: rgba(118, 118, 118, 0.36);
 }
