@@ -252,7 +252,7 @@ public class ExporterBean implements Serializable {
 
   private String output;
 
-  private List<String> mapOfValues = new LinkedList<>();
+  private Set<String> mapOfValues = new HashSet<>();
 
   private String description;
 
@@ -278,11 +278,11 @@ public class ExporterBean implements Serializable {
 
   private String content;
 
-  public List<String> getMapOfValues() {
+  public Set<String> getMapOfValues() {
     return mapOfValues;
   }
 
-  public void setMapOfValues(List<String> mapOfValues) {
+  public void setMapOfValues(Set<String> mapOfValues) {
     this.mapOfValues = mapOfValues;
   }
 
@@ -355,7 +355,7 @@ public class ExporterBean implements Serializable {
           String xvalues = value.getValues(rowInd, dependant);
           if (xvalues != null) {
             if (!isNumeric(xvalues)) {
-              String changedKey = x[rowInd - 1];
+              String changedKey = xvalues;
               if (oldNewMapping.containsKey(changedKey)) {
                 x[rowInd - 1] = oldNewMapping.get(changedKey);
               } else {

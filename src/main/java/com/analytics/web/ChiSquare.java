@@ -112,8 +112,8 @@ public class ChiSquare implements Serializable {
 			exporterBean.setContent(exporterBean.getContent() + "<th style=\"border:1px solid black;\"></th>");
 			exporterBean.setContent(exporterBean.getContent() + "<th style=\"border:1px solid black;\"></th>");
 			exporterBean.setContent(exporterBean.getContent() + "<td style=\"border:1px solid black;\" colspan = "
-					+ (xSet.size()) + ">" + exporterBean.getSelectedXChi() + "</td>");
-			exporterBean
+          + (xSet.size()) + "><b>" + exporterBean.getSelectedXChi() + "</b></td>");
+      exporterBean
 					.setContent(exporterBean.getContent() + "<th style=\"border:1px solid black;\"> Row Count </th>");
 			exporterBean.setContent(exporterBean.getContent() + "</tr>");
 			exporterBean.setContent(exporterBean.getContent() + "<tr>");
@@ -153,8 +153,9 @@ public class ChiSquare implements Serializable {
 				exporterBean.setContent(exporterBean.getContent() + "<tr>");
 				if (i == 0) {
 					exporterBean.setContent(exporterBean.getContent() + "<td style=\"border:1px solid black;\" rowspan="
-							+ (crosstab.table.length * 4) + ">" + exporterBean.getSelectedYChi() + "</td>");
-				}
+              + (crosstab.table.length * 4) + "><b>" + exporterBean.getSelectedYChi() +
+              "</b></td>");
+        }
 				LinkedList linkedList = new LinkedList(ySet);
 				String next = iterator.next();
 				while (next == null && iterator.hasNext()) {
@@ -177,8 +178,10 @@ public class ChiSquare implements Serializable {
 				chartXSeries.set("Rowcount " + exporterBean.getSelectedYChi() + " " + ySet.toArray()[i], rowcount);
 				exporterBean
 						.setContent(exporterBean.getContent() + "<td style=\"border:1px solid black;\" rowspan = 4 >"
-								+ "Total row count " + rowcount + "</td>");
-				exporterBean.setContent(exporterBean.getContent() + "</tr>");
+                + "<b>" + ExporterBean.roundTo2Decimals(
+                (rowcount / crosstab.table[i].length)) +
+                "</b><br>Total row count " + rowcount + "</td>");
+        exporterBean.setContent(exporterBean.getContent() + "</tr>");
 				exporterBean.setContent(exporterBean.getContent() + "<tr>");
 				for (int j = 0; j < crosstab.table[i].length; j++) {
 					exporterBean.setContent(exporterBean.getContent() + "<td style=\"border:1px solid black;\" >"
@@ -199,31 +202,32 @@ public class ChiSquare implements Serializable {
           double stdResidual = ExporterBean.roundTo2Decimals(
               (crosstab.table[i][j] - rowcount / crosstab.table[i].length)
                   / (Math.sqrt(rowcount / crosstab.table.length)));
-          double residualMinusMean = stdResidual - rowcount / crosstab.table[i].length;
+          double residualMinusMean = Math.abs(stdResidual - rowcount / crosstab.table[i].length);
           String residualDifferenceColorStyle = "background:grey;";
-          if (residualMinusMean >= 0) {
+          if (stdResidual >= 0) {
             residualDifferenceColorStyle = "background: rgba(202, 132, 134, 0.51);";
           }
-          if (residualMinusMean < 0) {
+          if (stdResidual < 0) {
             residualDifferenceColorStyle = "background: rgba(153, 202, 117, 0.51);";
           }
-          if (residualMinusMean <= -1) {
+          if (stdResidual <= -1) {
             residualDifferenceColorStyle = "background: rgba(153, 202, 117, 0.51);";
           }
-          if (residualMinusMean <= -2) {
+          if (stdResidual <= -2) {
             residualDifferenceColorStyle = "background: rgba(33, 202, 31, 0.51);";
           }
 
-          if (residualMinusMean >= 1) {
-            residualDifferenceColorStyle = "rgba(202, 77, 57, 0.51);";
+          if (stdResidual >= 1) {
+            residualDifferenceColorStyle = "background: rgba(202, 77, 57, 0.51);";
           }
-          if (residualMinusMean >= 2) {
-            residualDifferenceColorStyle = "rgba(202, 24, 0, 0.65);";
+          if (stdResidual >= 2) {
+            residualDifferenceColorStyle = "background: rgba(202, 24, 0, 0.65);";
           }
 
           exporterBean.setContent(
               exporterBean.getContent() + "<td style=\"border:1px solid black;"
-                  + residualDifferenceColorStyle + "\">" + "Std" +
+                  + residualDifferenceColorStyle + "\"><b>" + residualMinusMean + "</b><br>" + "Std"
+                  +
                   ".Residual "
                   + stdResidual
                   + "</td>");
@@ -253,14 +257,33 @@ public class ChiSquare implements Serializable {
 			exporterBean.setContent(exporterBean.getContent() + "</tr>");
 			exporterBean.setContent(exporterBean.getContent() + "<tr>");
 			exporterBean.setContent(exporterBean.getContent() + "<td style=\"border:1px solid black;\" colspan = 5>"
-					+ "Total column count " + columnCount + "</td>");
-			exporterBean.setContent(exporterBean.getContent() + "</tr>");
+          + "Total column count <b>" + columnCount + "<b/></td>");
+      exporterBean.setContent(exporterBean.getContent() + "</tr>");
 			exporterBean.setContent(exporterBean.getContent() + "<tr><td style=\"border:1px solid black;\"></td>");
 			exporterBean.setContent(exporterBean.getContent() + "<th style=\"border:1px solid black;\">" + "</th>");
 			exporterBean.setContent(exporterBean.getContent() + "<th style=\"border:1px solid black;\" colspan = 3>"
 					+ crosstab.output + "</th>");
 			exporterBean.setContent(exporterBean.getContent() + "</tr>");
 			exporterBean.setContent(exporterBean.getContent() + "</table></div>");
+
+      exporterBean.setContent(exporterBean.getContent()
+          + "<table style = \"  display: table; border-collapse: collapse; border-spacing: " +
+          "none; border-color: gray;\">" +
+          "  <tr>\n"
+          + "    <th style=\"border:1px solid black\">Color coding</th>\n"
+          + "    <th style=\"border:1px solid black;background: rgba(33, 202, 31, 0.51);\"><-2.0</th> \n"
+          + "    <th style=\"border:1px solid black;background: rgba(153, 202, 117, 0.51);\"><-1.0</th> \n"
+          + "    <th style=\"border:1px solid black;background: rgba(153, 202, 117, 0.51);\"><0.0</th> \n"
+          + "    <th style=\"border:1px solid black;background: rgba(202, 132, 134, 0.51);\">>0.0</th> \n"
+          + "    <th style=\"border:1px solid black;background: rgba(202, 77, 57, 0.51);\">>1.0</th> \n"
+          + "    <th style=\"border:1px solid black;background: rgba(202, 24, 0, 0.65);\">>2.0</th> \n"
+          + "  </tr>\n"
+          + "  <tr>\n"
+          + "    <td style=\"border:1px solid black\">N in each cell</td>\n"
+          + "    <td style=\"border:1px solid black;\" colspan=\"3\" >Smaller than expected</td>\n"
+          + "    <td style=\"border:1px solid black; \" colspan=\"3\">Larger than expected</td>\n"
+          + "  </tr>\n"
+          + "</table>");
 
 			exporterBean.setDescription(
 					"<br>Chi-square - It is also known as Pearson chi-square test.  It compares the observed"
@@ -282,8 +305,9 @@ public class ChiSquare implements Serializable {
 							+ "<br><li> Col Pct - This gives the percent of observations in the column.  If there are 91 males and there are 15 males in the low socioeconomic status group. So the column percent for the first cell is 15/91*100=16.48. \n"
 							+ "\n"
 							+ "<br><li> Total - This is the number of valid observations for the variable.  The total number of observations is the sum of N and the number of missing values.  If the sample size is not large enough, the test of independence of contingency tables such as Chi-square may not be accurate.\n"
-							+ "\n" + "");
-		} catch (Exception e) {
+              + "\n" + ""
+      );
+    } catch (Exception e) {
 			e.printStackTrace();
       exporterBean.setBarModel(null);
       FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", e
