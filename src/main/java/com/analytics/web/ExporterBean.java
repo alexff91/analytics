@@ -5,9 +5,15 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import com.google.common.collect.Lists;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
 import com.nz.simplecrud.controller.LoginController;
 import com.nz.simplecrud.service.UserService;
 import javastat.inference.ChisqTest;
+import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -20,8 +26,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
 import com.monitorjbl.xlsx.StreamingReader;
@@ -32,6 +41,7 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.io.ICsvListReader;
 import org.supercsv.prefs.CsvPreference;
+import org.w3c.tidy.Tidy;
 
 @ManagedBean(name = "bBean")
 @SessionScoped
@@ -276,7 +286,7 @@ public class ExporterBean implements Serializable {
     this.content = content;
   }
 
-  private String content;
+  private String content = "";
 
   public Set<String> getMapOfValues() {
     return mapOfValues;
@@ -401,6 +411,60 @@ public class ExporterBean implements Serializable {
           new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", e.getMessage()));
     }
   }
+
+  public void export() {
+    FacesContext fc = FacesContext.getCurrentInstance();
+    ExternalContext ec = fc.getExternalContext();
+    ec.responseReset();
+    ec.setResponseContentType("application/pdf");
+    String attachmentName = "attachment; filename=\"export-" + new Date().toString() +
+        ".pdf\"";
+    ec.setResponseHeader("Content-Disposition", attachmentName);
+    try {
+      OutputStream output = ec.getResponseOutputStream();
+      generatePDFFile(output);
+      //      Streams.copy(new ByteArrayInputStream(exportContent), output, false);
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    } catch (DocumentException e) {
+      e.printStackTrace();
+    }
+
+    fc.responseComplete();
+  }
+
+  private void generatePDFFile(java.io.OutputStream outputStream)
+  throws DocumentException, IOException {
+    // step 1
+    Document document = new Document(PageSize.A2);
+    // step 2
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PdfWriter writer = PdfWriter.getInstance(document, baos);
+    // step 3
+    document.open();
+    // step 4
+
+    // return the bytes of the PDF
+    Tidy tidy = new Tidy();
+    tidy.setInputEncoding("UTF-8");
+    tidy.setOutputEncoding("UTF-8");
+    tidy.setWraplen(Integer.MAX_VALUE);
+    tidy.setPrintBodyOnly(true);
+    tidy.setXmlOut(true);
+    tidy.setSmartIndent(true);
+    ByteArrayInputStream inputStream = new ByteArrayInputStream(content.getBytes("UTF-8"));
+    ByteArrayOutputStream outputTidyStream = new ByteArrayOutputStream();
+    tidy.parseDOM(inputStream, outputTidyStream);
+    XMLWorkerHelper.getInstance()
+        .parseXHtml(writer, document, new StringReader(outputTidyStream.toString(
+            "UTF-8")));
+    // step 5
+    document.close();
+    baos.writeTo(outputStream);
+    outputStream.flush();
+    outputStream.close();
+  }
+
 
   public List<DataValue> getStatisticsValues() {
     return statisticsValues;

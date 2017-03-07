@@ -28,6 +28,7 @@
       <element id="library" level="project" name="Maven: org.glassfish:javax.faces:2.1.6" />
       <element id="library" level="project" name="Maven: org.primefaces.themes:all-themes:1.0.10" />
       <element id="library" level="project" name="Maven: javax.servlet:jstl:1.2" />
+      <element id="library" level="project" name="Maven: net.sf.jtidy:jtidy:r938" />
       <element id="library" level="project" name="Maven: javax.servlet:javax.servlet-api:3.0.1" />
       <element id="library" level="project" name="Maven: javax.servlet.jsp:jsp-api:2.1" />
       <element id="library" level="project" name="Maven: org.glassfish.web:el-impl:2.2" />
@@ -53,7 +54,7 @@
       <element id="library" level="project" name="Maven: javax.persistence:persistence-api:1.0.2" />
       <element id="library" level="project" name="Maven: javax:javaee-web-api:7.0" />
       <element id="library" level="project" name="Maven: javax.ejb:ejb-api:3.0" />
-      <element id="library" level="project" name="Maven: org.primefaces.themes:aristo:1.0.8" />
+      <element id="library" level="project" name="Maven: org.primefaces.themes:bootstrap:1.0.10" />
       <element id="library" level="project" name="Maven: org.omnifaces:omnifaces:1.4.1" />
       <element id="library" level="project" name="Maven: commons-io:commons-io:2.4" />
       <element id="library" level="project" name="Maven: com.google.appengine:appengine-api-1.0-sdk:1.6.1" />

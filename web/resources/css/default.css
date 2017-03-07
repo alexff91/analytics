@@ -25,14 +25,14 @@
 }
 
 .table-red-high-cell {
-    background: rgba(202, 24, 0, 0.65); /* FF3.6+ */
+    background: rgba(232, 36, 11, 0.81); /* FF3.6+ */
     resize: horizontal;
     font-size: 120%;
     font-weight: bold;
 }
 
 .table-red-medium-cell {
-    background: rgba(202, 77, 57, 0.51); /* FF3.6+ */
+    background: rgba(205, 87, 71, 0.79); /* FF3.6+ */
     resize: horizontal;
     font-size: 120%;
     font-weight: bold;
@@ -46,14 +46,14 @@
 }
 
 .table-green-cell {
-    background: rgba(33, 202, 31, 0.51); /* FF3.6+ */
+    background: rgba(33, 202, 31, 0.85); /* FF3.6+ */
     resize: horizontal;
     font-size: 120%;
     font-weight: bold;
 }
 
 .table-medium-green-cell {
-    background: rgba(153, 202, 117, 0.51); /* FF3.6+ */
+    background: rgba(65, 202, 146, 0.56); /* FF3.6+ */
     resize: horizontal;
     font-size: 120%;
     font-weight: bold;

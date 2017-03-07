@@ -74,8 +74,8 @@
             <c:if test="#{loginController.userAdmin}">
                 <p:menuitem value="Home" action="/admin/adminHome.xhtml?faces-redirect=true"
                             ajax="false" icon="ui-icon-home"/>
-                <p:submenu title="Users" icon="ui-icon-person">
-                    <p:menuitem value="Users list"
+                <p:submenu value="Users" label="Users" icon="ui-icon-person">
+                <p:menuitem value="Users list"
                                 action="/admin/UserList.xhtml?faces-redirect=true"
                                 ajax="false" icon="ui-icon-person"/>
                     <p:submenu label="Help">

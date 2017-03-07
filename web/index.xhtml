@@ -682,28 +682,38 @@
     }
 
 
+
 </script>
-<h2>Output Statistics</h2>
-<h:outputText id="warningDose" escape="false" styleClass="redText"
-              value="#{bBean.output}"></h:outputText>
-<h:outputText id="chiOut" escape="false" styleClass="redText"
-              value="#{bBean.content}"></h:outputText>
+    <h2>Output Statistics</h2>
+    <h:outputText id="warningDose" escape="false" styleClass="redText"
+                  value="#{bBean.output}"></h:outputText>
+    <h:outputText id="chiOut" escape="false" styleClass="redText"
+                  value="#{bBean.content}"></h:outputText>
 
-<h2>Export Page Data Only</h2>
-<h:commandLink>
-    <p:graphicImage value="/resources/images/excel.png"/>
-    <p:dataExporter type="xls" target="dataValues" fileName="statistics" pageOnly="true"/>
-</h:commandLink>
+    <h2>Export Page Data Only</h2>
+    <!--<h:commandLink>-->
+    <!--<p:graphicImage value="/resources/images/excel.png"/>-->
+    <!--<p:dataExporter type="xls" target="content" fileName="statistics" pageOnly="true"/>-->
+    <!--</h:commandLink>-->
 
-<h:commandLink>
-    <p:graphicImage value="/resources/images/csv.png"/>
-    <p:dataExporter type="csv" target="dataValues" fileName="statistics" pageOnly="true"/>
-</h:commandLink>
+    <!--<h:commandLink>-->
+    <!--<p:graphicImage value="/resources/images/csv.png"/>-->
+    <!--<p:dataExporter type="csv" target="content" fileName="statistics" pageOnly="true"/>-->
+    <!--</h:commandLink>-->
 
-<h:commandLink>
-    <p:graphicImage value="/resources/images/xml.png"/>
-    <p:dataExporter type="xml" target="dataValues" fileName="statistics" pageOnly="true"/>
-</h:commandLink>
+    <!--<h:commandLink>-->
+    <!--<p:graphicImage value="/resources/images/xml.png"/>-->
+    <!--<p:dataExporter type="xml" target="content" fileName="statistics" pageOnly="true"/>-->
+    <!--</h:commandLink>-->
+
+    <!--<h:commandLink>-->
+    <!--<p:graphicImage value="/resources/images/pdf.png"/>-->
+    <!--<p:dataExporter type="pdf" target="content" fileName="statistics" pageOnly="true"/>-->
+    <!--</h:commandLink>-->
+
+    <h:commandLink action="#{bBean.export()}" id="download" value="Download as PDF">
+        <p:graphicImage value="/resources/images/pdf.png"/>
+    </h:commandLink>
 </c:if>
 </h:form>
 

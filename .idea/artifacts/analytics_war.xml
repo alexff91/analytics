@@ -14,6 +14,14 @@
           <element id="library" level="project" name="javastat" />
           <element id="library" level="project" name="jsci-core-1.1" />
           <element id="library" level="project" name="Maven: commons-io:commons-io:2.4" />
+          <element id="library" level="project" name="html2pdf-1.0.0" />
+          <element id="library" level="project" name="pdfa-7.0.2" />
+          <element id="library" level="project" name="forms-7.0.2" />
+          <element id="library" level="project" name="io-7.0.2" />
+          <element id="library" level="project" name="xmlworker-5.5.9" />
+          <element id="library" level="project" name="layout-7.0.2" />
+          <element id="library" level="project" name="kernel-7.0.2" />
+          <element id="library" level="project" name="itextpdf-5.5.9" />
         </element>
       </element>
     </root>

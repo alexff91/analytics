@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="forms-7.0.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/forms-7.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/io-7.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/html2pdf-1.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/pdfa-7.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/layout-7.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/kernel-7.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

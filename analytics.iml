@@ -41,9 +41,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/annotations" isTestSource="false" generated="true" />
-      <excludeFolder url="file://$MODULE_DIR$/target/analytics-1.0-SNAPSHOT" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -80,6 +78,7 @@
     <orderEntry type="library" name="Maven: org.glassfish:javax.faces:2.1.6" level="project" />
     <orderEntry type="library" name="Maven: org.primefaces.themes:all-themes:1.0.10" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:jstl:1.2" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.jtidy:jtidy:r938" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:3.0.1" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet.jsp:jsp-api:2.1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.web:el-impl:2.2" level="project" />
@@ -110,6 +109,14 @@
     <orderEntry type="library" name="Maven: org.omnifaces:omnifaces:1.4.1" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="library" name="Maven: com.google.appengine:appengine-api-1.0-sdk:1.6.1" level="project" />
+    <orderEntry type="library" name="html2pdf-1.0.0" level="project" />
+    <orderEntry type="library" name="pdfa-7.0.2" level="project" />
+    <orderEntry type="library" name="forms-7.0.2" level="project" />
+    <orderEntry type="library" name="io-7.0.2" level="project" />
+    <orderEntry type="library" name="xmlworker-5.5.9" level="project" />
+    <orderEntry type="library" name="layout-7.0.2" level="project" />
+    <orderEntry type="library" name="kernel-7.0.2" level="project" />
+    <orderEntry type="library" name="itextpdf-5.5.9" level="project" />
   </component>
 </module>
 
