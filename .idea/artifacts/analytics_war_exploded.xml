@@ -72,6 +72,7 @@
           <element id="library" level="project" name="kernel-7.0.2" />
           <element id="library" level="project" name="itextpdf-5.5.9" />
           <element id="library" level="project" name="Maven: net.sf.jtidy:jtidy:r938" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.5" />
         </element>
         <element id="jpa-descriptors" facet="analytics/jpa/JPA" />
       </element>

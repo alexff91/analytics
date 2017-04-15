@@ -15,6 +15,7 @@ import com.nz.simplecrud.service.UserService;
 import javastat.inference.ChisqTest;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.util.IOUtils;
@@ -262,7 +263,9 @@ public class ExporterBean implements Serializable {
 
   private String output;
 
-  private Set<String> mapOfValues = new HashSet<>();
+  private List<MappedVariable> mapOfValues = new ArrayList<>();
+
+  private List<MappedVariable> filteredMappedVariables = new ArrayList<>();
 
   private String description;
 
@@ -288,12 +291,20 @@ public class ExporterBean implements Serializable {
 
   private String content = "";
 
-  public Set<String> getMapOfValues() {
+  public List<MappedVariable> getMapOfValues() {
     return mapOfValues;
   }
 
-  public void setMapOfValues(Set<String> mapOfValues) {
+  public void setMapOfValues(List<MappedVariable> mapOfValues) {
     this.mapOfValues = mapOfValues;
+  }
+
+  public List<MappedVariable> getFilteredMappedVariables() {
+    return filteredMappedVariables;
+  }
+
+  public void setFilteredMappedVariables(final List<MappedVariable> filteredMappedVariables) {
+    this.filteredMappedVariables = filteredMappedVariables;
   }
 
   public void mapVariables() {
@@ -307,8 +318,7 @@ public class ExporterBean implements Serializable {
           dependant = i;
         }
       }
-      mapOfValues.add("Column:" + columnTemplate.get(dependant) + ", key:" + keyMapped + ", value:"
-          + valueMapped);
+      mapOfValues.add(new MappedVariable(keyMapped, valueMapped, columnTemplate.get(dependant)));
       if (mapOfColumns.get(dependant) == null) {
         HashMap<String, String> value = new HashMap<>();
         value.put(valueMapped, keyMapped);
@@ -347,22 +357,25 @@ public class ExporterBean implements Serializable {
   }
 
   public static boolean isNumeric(String str) {
-    return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+    return str.matches("-?\\d+(\\.\\d+)?"); //match a number with optional '-' and decimal.
   }
 
   public void automaticallyMapVariables() {
     try {
 
       int dependant = 0;
+      HashSet<MappedVariable> mappedVariablesSet = new HashSet<>();
 
       for (int i = 0; i < columnTemplate.size(); i++) {
-        dependant = i;
-
         String[] x = new String[statisticsValues.size()];
+        dependant = i;
         int rowInd = 1;
         HashMap<String, String> oldNewMapping = new HashMap<>();
         for (DataValue value : statisticsValues) {
-          String xvalues = value.getValues(rowInd, dependant);
+          String xvalues = null;
+          if (dependant < value.getRowValues().size()) {
+            xvalues = value.getRowValues().get(dependant);
+          }
           if (xvalues != null) {
             if (!isNumeric(xvalues)) {
               String changedKey = xvalues;
@@ -373,10 +386,8 @@ public class ExporterBean implements Serializable {
                 x[rowInd - 1] = String.valueOf(rowInd);
               }
 
-              mapOfValues
-                  .add(
-                      "Column:" + columnTemplate.get(dependant) + ", key:" + changedKey + ", value:"
-                          + x[rowInd - 1]);
+              mappedVariablesSet.add(
+                  new MappedVariable(changedKey, x[rowInd - 1], columnTemplate.get(dependant)));
               if (mapOfColumns.get(dependant) == null) {
                 HashMap<String, String> valueMap = new HashMap<>();
                 valueMap.put(x[rowInd - 1], changedKey);
@@ -391,6 +402,7 @@ public class ExporterBean implements Serializable {
             rowInd++;
           }
         }
+
         tableHeader = "Data values";
         dataValues.clear();
         columns.clear();
@@ -405,6 +417,7 @@ public class ExporterBean implements Serializable {
         createDynamicColumns();
         nullifyAll();
       }
+      mapOfValues.addAll(mappedVariablesSet);
     } catch (Exception e) {
       e.printStackTrace();
       FacesContext.getCurrentInstance().addMessage(null,
@@ -857,7 +870,7 @@ public class ExporterBean implements Serializable {
         //create destination File
         //                  saveFileToUserFolder(is,fileName);
         reader = StreamingReader.builder()
-            .rowCacheSize(500)    // number of rows to keep in memory (defaults to 10)
+            .rowCacheSize(1000)    // number of rows to keep in memory (defaults to 10)
             .bufferSize(
                 8096)     // buffer size to use when reading InputStream to file (defaults to 1024)
             .sheetIndex(0)        // index of sheet to use (defaults to 0)
