@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  analytics-platform:
+    build: .
+    container_name: analytics-platform
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/analytics
+      - SPRING_DATASOURCE_USERNAME=analytics
+      - SPRING_DATASOURCE_PASSWORD=analytics123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - APP_JWT_SECRET=YW5hbHl0aWNzLXBsYXRmb3JtLXNlY3JldC1rZXktY2hhbmdlLXRoaXMtaW4tcHJvZHVjdGlvbi0yNTYtYml0
+      - APP_FILE_STORAGE_UPLOAD_DIR=/app/uploads
+    volumes:
+      - analytics-uploads:/app/uploads
+      - analytics-data:/app/data
+      - analytics-logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - analytics-network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: analytics-postgres
+    environment:
+      - POSTGRES_DB=analytics
+      - POSTGRES_USER=analytics
+      - POSTGRES_PASSWORD=analytics123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U analytics"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - analytics-network
+
+volumes:
+  analytics-uploads:
+  analytics-data:
+  analytics-logs:
+  postgres-data:
+
+networks:
+  analytics-network:
+    driver: bridge
