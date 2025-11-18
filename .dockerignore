@@ -1,0 +1,14 @@
+target/
+.mvn/
+.git/
+.gitignore
+*.md
+uploads/
+data/
+logs/
+temp/
+*.log
+.DS_Store
+node_modules/
+frontend/node_modules/
+frontend/build/
